@@ -1,11 +1,13 @@
 package world;
 
+import java.awt.Color;
+
 import javax.swing.JFrame;
 
 public class Display extends JFrame {
 	
 	public Display(){
-		Board board = new Board(100);
+		Board board = new Board(10);
 		
 		add(board);
 
@@ -14,6 +16,8 @@ public class Display extends JFrame {
         setLocationRelativeTo(null);
         setTitle("Tiles");
         setVisible(true);
+        
+        this.setBackground(new Color(255,255,255));
         
         new Thread(board).start();
 	}

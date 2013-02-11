@@ -1,5 +1,6 @@
 package world;
 
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
@@ -30,6 +31,8 @@ public class Board extends JPanel implements Runnable {
         
         world = new World(100,100);
         player = new Player(50,50,20,16,world);
+        
+        this.setBackground(new Color(255,255,255));
         
         initKeyBindings();
         

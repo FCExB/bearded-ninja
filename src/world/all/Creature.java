@@ -22,7 +22,7 @@ public class Creature {
 	}
 	
 	public void update(){
-		if(Math.random() > 0.9){
+		if(Math.random() > 0.95){
 			world.getTile(pos).resetImage();
 			int randX = (int) Math.round((Math.random() * 2 - 1));
 			int randY = (int) Math.round(Math.random() * 2 - 1);

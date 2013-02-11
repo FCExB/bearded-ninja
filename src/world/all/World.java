@@ -32,7 +32,7 @@ public class World {
 
 		for (int x = 0; x < tiles.length; x++) {
 			for (int y = 0; y < tiles[x].length; y++) {
-				if(Math.random() < 0.3){
+				if(Math.random() < 0.2){
 				tiles[x][y] = new Tile(tileTwo);
 				} else {
 					tiles[x][y] = new Tile(tileOne);

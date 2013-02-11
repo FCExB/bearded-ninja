@@ -42,10 +42,18 @@ public class Player extends AbstractAction {
 				int worldY = j + (position.getY() - viewHeight/2); 
 				
 				Tile tile = world.getTile(worldX, worldY);
+				
+				if(Math.abs((worldX-position.getX()))+Math.abs((worldY-position.getY())) <= 3){
+					tile.setVisible(true);
+				}
 
-				if (!tile.equals(null)) {
+				if (!tile.equals(null) && tile.isVisible()) {
 					g2d.drawImage(tile.getImage(), i * 16 + xOffset, j * 16
 							+ yOffset, null);
+					
+				} else {
+					g2d.clearRect(i * 16 + xOffset,  j * 16
+							+ yOffset, 16, 16);
 				}
 				
 				if (worldX == position.getX() && worldY == position.getY()) {
