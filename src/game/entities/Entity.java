@@ -1,12 +1,13 @@
 package game.entities;
 
 import game.Camera;
-import game.SpriteSheet;
 import game.world.World;
 
 import org.lwjgl.util.vector.Vector3f;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Image;
+
+import util.SpriteSheet;
 
 
 public abstract class Entity {

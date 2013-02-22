@@ -1,6 +1,5 @@
 package game.entities;
 
-import game.SpriteSheet;
 import game.world.Fence;
 import game.world.World;
 
@@ -9,6 +8,8 @@ import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
+
+import util.SpriteSheet;
 
 public class Player extends Entity {
 
