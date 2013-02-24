@@ -1,17 +1,15 @@
 package game.world;
 
-import org.newdawn.slick.Image;
-import org.newdawn.slick.SlickException;
+import util.Assets;
 
 public class Fence extends Tile {
 
-	public Fence() throws SlickException {
-		super(new Image("bin/data/fence.png"));
-		
+	public Fence() {
+		super(Assets.FENCE);
 	}
-	
+
 	@Override
-	public boolean walkable(){
+	public boolean walkable() {
 		return false;
 	}
 }

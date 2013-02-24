@@ -7,15 +7,15 @@ public class SlickMain {
 
 	/**
 	 * @param args
-	 * @throws SlickException 
+	 * @throws SlickException
 	 */
 	public static void main(String[] args) throws SlickException {
-		TheWild game = new TheWild(); 
-				
+		TheWild game = new TheWild();
+
 		AppGameContainer container = new AppGameContainer(game);
-		
+
 		container.setDisplayMode(800, 600, false);
-		
+
 		container.start();
 
 	}

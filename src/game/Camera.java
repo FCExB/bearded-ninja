@@ -7,20 +7,31 @@ import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Input;
 
 public class Camera {
-	
-	private int xOffset,yOffset, x,y, viewWidth, viewHeight;
-	
-	public Camera(int topLeftX, int topLeftY, int x, int y, int viewWidth, int viewHeight) {
+
+	private int x;
+	private int y;
+	private int viewWidth;
+	private int viewHeight;
+	private float angle;
+
+	public Camera(int x, int y, int viewWidth, int viewHeight) {
 		this.x = x;
 		this.y = y;
 		this.viewWidth = viewWidth;
 		this.viewHeight = viewHeight;
-		this.xOffset = topLeftX;
-		this.yOffset = topLeftY;
+		this.angle = 45;
+	}
+
+	public float zScaler() {
+		return (float) Math.sin(angle * (Math.PI / 180));
+	}
+
+	public float otherScaler() {
+		return (float) Math.cos(angle * (Math.PI) / 180);
 	}
 
 	public int getX() {
-		return x - xOffset;
+		return x;
 	}
 
 	public void setX(int x) {
@@ -28,7 +39,7 @@ public class Camera {
 	}
 
 	public int getY() {
-		return y - yOffset;
+		return y;
 	}
 
 	public void setY(int y) {
@@ -52,13 +63,27 @@ public class Camera {
 	}
 
 	public boolean inView(Vector3f pos) {
-		return pos.x >= x && pos.x < x+viewWidth &&
-			   pos.y >= y && pos.y < y+ viewHeight;
+
+		int halfWidth = viewWidth / 2;
+		float halfHeight = (viewHeight / zScaler()) / 2;
+
+		return pos.x >= x - halfWidth && pos.x < x + halfWidth
+				&& pos.z >= y - halfHeight && pos.z < y + halfHeight;
 	}
 
 	public void update(GameContainer gc, Player player) {
-		x = Math.round(player.getPosition().x)-viewWidth/2;
-		y = Math.round(player.getPosition().y)-viewHeight/2;
-		
+
+		float rotateSpeed = 0.2f;
+
+		Input input = gc.getInput();
+
+		if (input.isKeyDown(Input.KEY_K) && angle < 90) {
+			angle += rotateSpeed;
+		} else if (input.isKeyDown(Input.KEY_M) && angle > 0) {
+			angle -= rotateSpeed;
+		}
+
+		x = Math.round(player.getPosition().x);
+		y = Math.round(player.getPosition().z);
 	}
 }

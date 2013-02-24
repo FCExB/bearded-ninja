@@ -9,8 +9,7 @@ import org.newdawn.slick.Image;
 
 import util.SpriteSheet;
 
-
-public abstract class Entity {
+public abstract class Entity implements Comparable<Entity> {
 	protected Vector3f position;
 	private Vector3f velocity = new Vector3f(0, 0, 0);
 
@@ -18,7 +17,7 @@ public abstract class Entity {
 
 	private int animationFrame;
 	private int time;
-	private int width, height;
+	private final int width, height, depth;
 
 	protected final World world;
 
@@ -28,6 +27,8 @@ public abstract class Entity {
 		movingAnimation = ss;
 		width = ss.getSpriteWidth();
 		height = ss.getSpriteHeight();
+
+		depth = 16;
 	}
 
 	public Entity(Image image, Vector3f position, World world) {
@@ -37,27 +38,42 @@ public abstract class Entity {
 				image.getHeight());
 		width = image.getWidth();
 		height = image.getHeight();
+
+		depth = 16;
 	}
-	
-	public int getHeight(){
+
+	public int getHeight() {
 		return height;
 	}
-	
-	public int getWidth(){
+
+	public int getWidth() {
 		return width;
 	}
-	
-	public Vector3f getPosition(){
+
+	public int getDepth() {
+		return depth;
+	}
+
+	public Vector3f getPosition() {
 		return new Vector3f(position);
 	}
 
 	public void render(Camera camera) {
 		if (camera.inView(position)) {
 
+			float zScaler = camera.zScaler();
+			float otherScaler = camera.otherScaler();
+
 			Image image = movingAnimation.getSubImage(animationFrame, 0);
 
-			image.draw(Math.round(position.getX() - camera.getX()), Math.round(position.getY()
-					- camera.getY()));
+			int x = Math.round(position.getX() - camera.getX()) + 400 - width
+					/ 2;
+			int y = Math.round((position.getZ() - camera.getY()) * zScaler
+					+ 300 - height * otherScaler - position.y * otherScaler);
+			float xScale = 1;
+			float yScale = otherScaler;
+
+			image.draw(x, y, width * xScale, height * yScale);
 		}
 	}
 
@@ -67,37 +83,56 @@ public abstract class Entity {
 		act(deltaT, gc);
 
 		time += deltaT;
-		if (time >= 90 && velocity.length() >= 0.025) {
+		if (time >= 90 && velocity.length() >= 0.05) {
 			animationFrame = (animationFrame + 1)
 					% movingAnimation.getNumberOfSpritesWide();
 			time = 0;
 		}
-		
+
 		Vector3f.add(velocity, acceleration(deltaT, gc), velocity);
-		applyFriction(deltaT);
+
+		applyWorldForces(deltaT);
 
 		Vector3f newPosition = Vector3f.add(position, velocity, null);
-		
-		if(world.positionClear(newPosition,this)){
+
+		if (world.positionClear(newPosition, this)) {
 			position = newPosition;
 		} else {
 			velocity = new Vector3f();
 		}
 	}
-	
-	private void applyFriction(int deltaT) {
-		float friction = 0.99f;
 
-		velocity.scale(friction);
+	private void applyWorldForces(int deltaT) {
+		if (position.y <= 0) {
+			position.y = 0;
+			float friction = 0.9f;
+			velocity.scale(friction);
+		} else {
+			float gravity = -0.01f;
+			Vector3f.add(velocity, new Vector3f(0, gravity * deltaT, 0),
+					velocity);
+		}
 	}
 
 	protected void act(int deltaT, GameContainer gc) {
 	}
-	
-	public boolean collides(Vector3f pos){
-		return pos.x >= position.x && pos.x <= position.x + width
-				&& pos.y >= position.y && pos.y <= position.y + height;
+
+	public boolean collides(Vector3f pos) {
+		int halfWidth = width / 2;
+		int halfDepth = depth / 2;
+
+		return pos.x >= position.x - halfWidth
+				&& pos.x <= position.x + halfWidth
+				&& pos.z >= position.z - halfDepth
+				&& pos.z <= position.z + halfDepth && pos.y >= position.y
+				&& pos.y <= position.y + height;
 	}
-	
+
+	abstract public void hitBy(Entity entity);
+
+	@Override
+	public int compareTo(Entity that) {
+		return new Float(position.z).compareTo(that.position.z);
+	}
 
 }

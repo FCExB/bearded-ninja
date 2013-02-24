@@ -1,34 +1,32 @@
 package game.world;
 
 import game.Camera;
-import game.entities.Creature;
 import game.entities.Entity;
 import game.entities.Player;
 
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.lwjgl.util.vector.Vector3f;
-import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
+
+import util.Assets;
 
 public class World {
 	private final int tileSize = 16;
 
-	private final Image tileOne;
-	private final Image tileTwo;
-
 	private final Tile[][] tiles;
 
-	private int width, height;
-	
-	private List<Entity> entities; 
-	
+	private final int width, height;
+
+	private final List<Entity> entities;
+	private final List<Entity> toAdd = new LinkedList<Entity>();
+	private final List<Entity> toRemove = new LinkedList<Entity>();
+
 	private Player player;
 
-	public World(int width, int height,List<Entity> entities ) throws SlickException {
-		tileOne = new Image("bin/data/grass.png");
-		tileTwo = new Image("bin/data/rock.png");
+	public World(int width, int height, List<Entity> entities)
+			throws SlickException {
 
 		this.width = width;
 		this.height = height;
@@ -39,19 +37,20 @@ public class World {
 		for (int x = 0; x < tiles.length; x++) {
 			for (int y = 0; y < tiles[x].length; y++) {
 				if (Math.random() < 0.2) {
-					tiles[x][y] = new Tile(tileTwo);
+					tiles[x][y] = new Popup(Assets.TILE_ONE, Assets.TILE_TWO);
 				} else {
-					tiles[x][y] = new Tile(tileOne);
+					tiles[x][y] = new Tile(Assets.TILE_ONE);
 				}
-				
-				if (x == 0 || y == 0 || x == tiles.length-1 || y == tiles[x].length-1){
+
+				if (x == 0 || y == 0 || x == tiles.length - 1
+						|| y == tiles[x].length - 1) {
 					tiles[x][y] = new Fence();
 				}
 			}
 		}
 	}
-	
-	public void addPLayer(Player player){
+
+	public void addPLayer(Player player) {
 		this.player = player;
 	}
 
@@ -62,8 +61,8 @@ public class World {
 			return null;
 		}
 	}
-	
-	public int getTileSize(){
+
+	public int getTileSize() {
 		return tileSize;
 	}
 
@@ -74,20 +73,49 @@ public class World {
 	public int getHeight() {
 		return height;
 	}
-	
-	public Vector3f getPlayerLocation(){
+
+	public Vector3f getPlayerLocation() {
 		return player.getPosition();
 	}
 
 	public void render(Camera camera) {
-		for (int x = 0; x < tiles.length; x++) {
-			for (int y = 0; y < tiles[x].length; y++) {
-				int tileX = x * tileSize;
-				int tileY = y * tileSize;
+		float zScaler = camera.zScaler();
 
-				if (camera.inView(new Vector3f(tileX, tileY, 0))) {
-					tiles[x][y].getImage().draw(tileX - camera.getX(),
-							tileY - camera.getY());
+		for (int x = 0; x < tiles.length; x++) {
+			for (int z = 0; z < tiles[x].length; z++) {
+				int tileX = x * tileSize;
+				int tileZ = z * tileSize;
+
+				if (camera.inView(new Vector3f(tileX, 0, tileZ))) {
+
+					Tile currentTile = tiles[x][z];
+
+					// Draw floor tile
+					int xLocation = (tileX - camera.getX()) + 400;
+					float yLocation = (tileZ - camera.getY()) * zScaler + 300;
+					float xScale = 1;
+					float yScale = zScaler;
+
+					currentTile.getImage().draw(xLocation, yLocation,
+							tileSize * xScale, tileSize * yScale);
+
+					// Draw vertical parts
+
+					if (currentTile instanceof Popup) {
+
+						Popup popUpTile = (Popup) currentTile;
+
+						float otherScaler = camera.otherScaler();
+
+						yLocation = Math.round((tileZ - camera.getY())
+								* zScaler + 300 + (tileSize * zScaler) / 2
+								- tileSize * otherScaler);
+						xScale = 1;
+						yScale = otherScaler;
+
+						popUpTile.getVerticalImage().draw(xLocation, yLocation,
+								tileSize * xScale, tileSize * yScale);
+					}
 				}
 			}
 		}
@@ -95,29 +123,48 @@ public class World {
 	}
 
 	public void addFence(int x, int y) {
-		try {
-			tiles[x][y] = new Fence();
-		} catch (SlickException e) {
-			e.printStackTrace();
-		}
+		tiles[x][y] = new Fence();
+	}
+
+	private boolean indexInBounds(int xIndex, int yIndex) {
+		return xIndex >= 0 && xIndex < tiles.length && yIndex >= 0
+				&& yIndex < tiles[xIndex].length;
 	}
 
 	public boolean positionClear(Vector3f pos, Entity entity) {
 
-		for (float x = pos.x; x <= pos.x + entity.getWidth(); x += tileSize) {
-			for (float y = pos.y; y <= pos.y + entity.getHeight(); y += tileSize) {
-				if (!tiles[Math.round(x / tileSize)][Math.round(y / tileSize)].walkable()) {
+		for (float x = pos.x - entity.getWidth() / 2; x <= pos.x
+				+ entity.getWidth() / 2; x += tileSize) {
+			for (float z = pos.z - entity.getDepth() / 2; z <= pos.z
+					+ entity.getDepth() / 2; z += tileSize) {
+
+				int xIndex = Math.round(x / tileSize);
+				int zIndex = Math.round(z / tileSize);
+
+				if (indexInBounds(xIndex, zIndex)
+						&& !tiles[xIndex][zIndex].walkable() && pos.y < 17) {
 					return false;
 				}
-				
-				for(Entity e : entities){
-					if(e != entity && e.collides(new Vector3f(x,y,0))){
+
+				for (float y = pos.y - entity.getHeight() / 2; y <= pos.y
+						+ entity.getHeight() / 2; y += tileSize) {
+
+					for (Entity e : entities) {
+						if (e != entity && e.collides(new Vector3f(x, y, z))) {
+							if (entities.contains(entity)) {
+								e.hitBy(entity);
+							}
+							return false;
+						}
+					}
+
+					if (player != entity
+							&& player.collides(new Vector3f(x, y, z))) {
+						if (entities.contains(entity)) {
+							player.hitBy(entity);
+						}
 						return false;
 					}
-				}
-				
-				if(player != entity && player.collides(new Vector3f(x,y,0))){
-					return false;
 				}
 
 			}
@@ -126,16 +173,26 @@ public class World {
 		return true;
 	}
 
-	public void addCreature(Vector3f pos) {
-		try {
-			Creature newCreature = new Creature(pos,this);
-			
-			if(positionClear(pos,newCreature)){
-				entities.add(newCreature);
-			}
-		} catch (SlickException e) {
-			e.printStackTrace();
+	public boolean addEntity(Entity entity, Vector3f pos) {
+		if (positionClear(pos, entity)) {
+			toAdd.add(entity);
+			return true;
 		}
-		
+
+		return false;
+	}
+
+	public void removeEntity(Entity entity) {
+		toRemove.add(entity);
+	}
+
+	public void addAllEntities() {
+		entities.addAll(toAdd);
+		toAdd.clear();
+	}
+
+	public void removeAllEntities() {
+		entities.removeAll(toRemove);
+		toRemove.clear();
 	}
 }
