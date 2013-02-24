@@ -71,16 +71,16 @@ public class Camera {
 				&& pos.z >= y - halfHeight && pos.z < y + halfHeight;
 	}
 
-	public void update(GameContainer gc, Player player) {
+	public void update(GameContainer gc, Player player, int deltaT) {
 
-		float rotateSpeed = 0.2f;
+		float rotateSpeed = 0.06f;
 
 		Input input = gc.getInput();
 
 		if (input.isKeyDown(Input.KEY_K) && angle < 90) {
-			angle += rotateSpeed;
-		} else if (input.isKeyDown(Input.KEY_M) && angle > 0) {
-			angle -= rotateSpeed;
+			angle += rotateSpeed * deltaT;
+		} else if (input.isKeyDown(Input.KEY_M) && angle > 2) {
+			angle -= rotateSpeed * deltaT;
 		}
 
 		x = Math.round(player.getPosition().x);

@@ -9,7 +9,7 @@ import org.newdawn.slick.SlickException;
 
 import util.Assets;
 
-public class Player extends Entity {
+public class Player extends MovingEntity {
 
 	private final float acceleration = 30f;
 

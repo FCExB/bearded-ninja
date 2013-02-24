@@ -3,6 +3,8 @@ package game.world;
 import game.Camera;
 import game.entities.Entity;
 import game.entities.Player;
+import game.entities.Rock;
+import game.entities.Tree;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -36,15 +38,19 @@ public class World {
 
 		for (int x = 0; x < tiles.length; x++) {
 			for (int y = 0; y < tiles[x].length; y++) {
-				if (Math.random() < 0.2) {
-					tiles[x][y] = new Popup(Assets.TILE_ONE, Assets.TILE_TWO);
-				} else {
-					tiles[x][y] = new Tile(Assets.TILE_ONE);
-				}
+				tiles[x][y] = new Tile(Assets.TILE_ONE);
 
 				if (x == 0 || y == 0 || x == tiles.length - 1
 						|| y == tiles[x].length - 1) {
 					tiles[x][y] = new Fence();
+				} else if (Math.random() < 0.2) {
+					entities.add(new Rock(false, new Vector3f(x * tileSize
+							+ tileSize / 2, 0, y * tileSize + tileSize / 2),
+							this));
+				} else if (Math.random() < 0.01) {
+					entities.add(new Tree(true, new Vector3f(x * tileSize
+							+ tileSize / 2, 0, y * tileSize + tileSize / 2),
+							this));
 				}
 			}
 		}
@@ -98,24 +104,6 @@ public class World {
 
 					currentTile.getImage().draw(xLocation, yLocation,
 							tileSize * xScale, tileSize * yScale);
-
-					// Draw vertical parts
-
-					if (currentTile instanceof Popup) {
-
-						Popup popUpTile = (Popup) currentTile;
-
-						float otherScaler = camera.otherScaler();
-
-						yLocation = Math.round((tileZ - camera.getY())
-								* zScaler + 300 + (tileSize * zScaler) / 2
-								- tileSize * otherScaler);
-						xScale = 1;
-						yScale = otherScaler;
-
-						popUpTile.getVerticalImage().draw(xLocation, yLocation,
-								tileSize * xScale, tileSize * yScale);
-					}
 				}
 			}
 		}

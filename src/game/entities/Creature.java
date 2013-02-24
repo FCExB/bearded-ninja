@@ -8,7 +8,7 @@ import org.newdawn.slick.Image;
 
 import util.Assets;
 
-public class Creature extends Entity {
+public class Creature extends MovingEntity {
 
 	private final float acceleration = 10f;
 

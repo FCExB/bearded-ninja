@@ -76,7 +76,7 @@ public class TheWild extends BasicGame {
 			e.update(delta, container);
 		}
 
-		camera.update(container, player);
+		camera.update(container, player, delta);
 
 		world.removeAllEntities();
 		world.addAllEntities();
@@ -91,7 +91,7 @@ public class TheWild extends BasicGame {
 		Collections.sort(entities);
 
 		for (Entity e : entities) {
-			e.render(camera);
+			e.render(camera, g);
 		}
 	}
 }

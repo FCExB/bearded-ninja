@@ -5,41 +5,41 @@ import game.world.World;
 
 import org.lwjgl.util.vector.Vector3f;
 import org.newdawn.slick.GameContainer;
+import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 
+import util.Assets;
 import util.SpriteSheet;
 
 public abstract class Entity implements Comparable<Entity> {
-	protected Vector3f position;
-	private Vector3f velocity = new Vector3f(0, 0, 0);
 
-	private final SpriteSheet movingAnimation;
+	protected Vector3f position;
+
+	private final SpriteSheet animation;
 
 	private int animationFrame;
 	private int time;
 	private final int width, height, depth;
 
+	private final boolean hasShadow;
+
 	protected final World world;
 
-	public Entity(SpriteSheet ss, Vector3f position, World world) {
+	public Entity(SpriteSheet ss, boolean hasShadow, int depth,
+			Vector3f position, World world) {
 		this.position = position;
 		this.world = world;
-		movingAnimation = ss;
+		animation = ss;
 		width = ss.getSpriteWidth();
 		height = ss.getSpriteHeight();
-
-		depth = 16;
+		this.depth = depth;
+		this.hasShadow = hasShadow;
 	}
 
-	public Entity(Image image, Vector3f position, World world) {
-		this.position = position;
-		this.world = world;
-		movingAnimation = new SpriteSheet(image, image.getWidth(),
-				image.getHeight());
-		width = image.getWidth();
-		height = image.getHeight();
-
-		depth = 16;
+	public Entity(Image image, boolean hasShadow, int depth, Vector3f position,
+			World world) {
+		this(new SpriteSheet(image, image.getWidth(), image.getHeight()),
+				hasShadow, depth, position, world);
 	}
 
 	public int getHeight() {
@@ -58,13 +58,24 @@ public abstract class Entity implements Comparable<Entity> {
 		return new Vector3f(position);
 	}
 
-	public void render(Camera camera) {
+	public void render(Camera camera, Graphics g) {
 		if (camera.inView(position)) {
 
 			float zScaler = camera.zScaler();
 			float otherScaler = camera.otherScaler();
 
-			Image image = movingAnimation.getSubImage(animationFrame, 0);
+			if (hasShadow) {
+				int x = Math.round(position.getX() - camera.getX()) + 400
+						- width / 2;
+				int y = Math.round((position.getZ() - camera.getY()) * zScaler
+						+ 300 - (depth * zScaler) / 2);
+				float xScale = 1;
+				float yScale = zScaler;
+
+				Assets.SHADOW.draw(x, y, width * xScale, depth * yScale);
+			}
+
+			Image image = animation.getSubImage(animationFrame, 0);
 
 			int x = Math.round(position.getX() - camera.getX()) + 400 - width
 					/ 2;
@@ -77,40 +88,13 @@ public abstract class Entity implements Comparable<Entity> {
 		}
 	}
 
-	abstract Vector3f acceleration(int deltaT, GameContainer gc);
-
 	public void update(int deltaT, GameContainer gc) {
-		act(deltaT, gc);
 
 		time += deltaT;
-		if (time >= 90 && velocity.length() >= 0.05) {
+		if (time >= 90) {
 			animationFrame = (animationFrame + 1)
-					% movingAnimation.getNumberOfSpritesWide();
+					% animation.getNumberOfSpritesWide();
 			time = 0;
-		}
-
-		Vector3f.add(velocity, acceleration(deltaT, gc), velocity);
-
-		applyWorldForces(deltaT);
-
-		Vector3f newPosition = Vector3f.add(position, velocity, null);
-
-		if (world.positionClear(newPosition, this)) {
-			position = newPosition;
-		} else {
-			velocity = new Vector3f();
-		}
-	}
-
-	private void applyWorldForces(int deltaT) {
-		if (position.y <= 0) {
-			position.y = 0;
-			float friction = 0.9f;
-			velocity.scale(friction);
-		} else {
-			float gravity = -0.01f;
-			Vector3f.add(velocity, new Vector3f(0, gravity * deltaT, 0),
-					velocity);
 		}
 	}
 
