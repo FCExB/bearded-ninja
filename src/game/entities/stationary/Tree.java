@@ -1,5 +1,6 @@
-package game.entities;
+package game.entities.stationary;
 
+import game.entities.Entity;
 import game.world.World;
 
 import org.lwjgl.util.vector.Vector3f;
@@ -14,6 +15,6 @@ public class Tree extends Entity {
 
 	@Override
 	public void hitBy(Entity entity) {
-
+		super.hitBy(entity);
 	}
 }

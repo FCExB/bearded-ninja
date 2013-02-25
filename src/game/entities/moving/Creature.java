@@ -1,5 +1,7 @@
-package game.entities;
+package game.entities.moving;
 
+import game.entities.Entity;
+import game.entities.MovingEntity;
 import game.world.World;
 
 import org.lwjgl.util.vector.Vector3f;
@@ -7,6 +9,8 @@ import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Image;
 
 import util.Assets;
+import util.Attribute;
+import util.Attributes;
 
 public class Creature extends MovingEntity {
 
@@ -18,12 +22,12 @@ public class Creature extends MovingEntity {
 
 	public Creature(Image image, Attributes attributes, Vector3f position,
 			World world) {
-		super(image, position, world);
+		super(image, position, new Vector3f(0, 0, 0), world);
 		this.attributes = attributes;
 	}
 
 	@Override
-	Vector3f acceleration(int deltaT, GameContainer gc) {
+	protected Vector3f acceleration(int deltaT, GameContainer gc) {
 
 		Vector3f result = new Vector3f(
 				world.getPlayerLocation().x - position.x, 0,
@@ -42,6 +46,8 @@ public class Creature extends MovingEntity {
 
 	@Override
 	public void hitBy(Entity entity) {
+		super.hitBy(entity);
+
 		if (entity instanceof Creature) {
 			Creature that = (Creature) entity;
 
@@ -67,6 +73,9 @@ public class Creature extends MovingEntity {
 					that.timeSinceBaby = 0;
 				}
 			}
+		} else if (entity instanceof Bullet) {
+			world.removeEntity(this);
+			world.removeEntity(entity);
 		}
 	}
 }

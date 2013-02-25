@@ -1,4 +1,4 @@
-package game.entities;
+package util;
 
 public class Attributes {
 	private final static double CHANCE_OF_MUTATION = 0.01;

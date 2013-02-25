@@ -12,15 +12,25 @@ public abstract class MovingEntity extends Entity {
 
 	private Vector3f velocity = new Vector3f(0, 0, 0);
 
-	public MovingEntity(SpriteSheet ss, Vector3f position, World world) {
+	public MovingEntity(SpriteSheet ss, Vector3f position,
+			Vector3f initalVelocity, World world) {
 		super(ss, true, 16, position, world);
+
+		velocity = initalVelocity;
 	}
 
-	public MovingEntity(Image image, Vector3f position, World world) {
+	public MovingEntity(Image image, Vector3f position,
+			Vector3f initalVelocity, World world) {
 		super(image, true, 16, position, world);
+
+		velocity = initalVelocity;
 	}
 
-	abstract Vector3f acceleration(int deltaT, GameContainer gc);
+	protected float getVelocitySize() {
+		return velocity.length();
+	}
+
+	abstract protected Vector3f acceleration(int deltaT, GameContainer gc);
 
 	@Override
 	public void update(int deltaT, GameContainer gc) {
@@ -50,5 +60,4 @@ public abstract class MovingEntity extends Entity {
 					velocity);
 		}
 	}
-
 }

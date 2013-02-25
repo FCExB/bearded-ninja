@@ -1,6 +1,8 @@
 package game.entities;
 
 import game.Camera;
+import game.entities.moving.Bullet;
+import game.entities.stationary.Explosion;
 import game.world.World;
 
 import org.lwjgl.util.vector.Vector3f;
@@ -19,7 +21,11 @@ public abstract class Entity implements Comparable<Entity> {
 
 	private int animationFrame;
 	private int time;
-	private final int width, height, depth;
+	protected boolean animating = false;
+
+	protected final int width;
+	protected final int height;
+	protected final int depth;
 
 	private final boolean hasShadow;
 
@@ -54,6 +60,10 @@ public abstract class Entity implements Comparable<Entity> {
 		return depth;
 	}
 
+	protected int getAnimationFrame() {
+		return animationFrame;
+	}
+
 	public Vector3f getPosition() {
 		return new Vector3f(position);
 	}
@@ -72,6 +82,11 @@ public abstract class Entity implements Comparable<Entity> {
 				float xScale = 1;
 				float yScale = zScaler;
 
+				if (position.y > 0) {
+					xScale *= Math.abs(1 / (1 + position.y));
+					zScaler *= Math.abs((1 / (1 + position.y)));
+				}
+
 				Assets.SHADOW.draw(x, y, width * xScale, depth * yScale);
 			}
 
@@ -89,9 +104,10 @@ public abstract class Entity implements Comparable<Entity> {
 	}
 
 	public void update(int deltaT, GameContainer gc) {
+		act(deltaT, gc);
 
 		time += deltaT;
-		if (time >= 90) {
+		if (time >= 50 && animating) {
 			animationFrame = (animationFrame + 1)
 					% animation.getNumberOfSpritesWide();
 			time = 0;
@@ -112,7 +128,14 @@ public abstract class Entity implements Comparable<Entity> {
 				&& pos.y <= position.y + height;
 	}
 
-	abstract public void hitBy(Entity entity);
+	public void hitBy(Entity entity) {
+		if (entity instanceof Bullet) {
+			world.removeEntity(entity);
+
+			world.addEntity(new Explosion(entity.position, world),
+					entity.position);
+		}
+	}
 
 	@Override
 	public int compareTo(Entity that) {

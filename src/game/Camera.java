@@ -1,6 +1,6 @@
 package game;
 
-import game.entities.Player;
+import game.entities.moving.Player;
 
 import org.lwjgl.util.vector.Vector3f;
 import org.newdawn.slick.GameContainer;
@@ -77,9 +77,9 @@ public class Camera {
 
 		Input input = gc.getInput();
 
-		if (input.isKeyDown(Input.KEY_K) && angle < 90) {
+		if (input.isKeyDown(Input.KEY_Q) && angle < 90) {
 			angle += rotateSpeed * deltaT;
-		} else if (input.isKeyDown(Input.KEY_M) && angle > 2) {
+		} else if (input.isKeyDown(Input.KEY_E) && angle > 2) {
 			angle -= rotateSpeed * deltaT;
 		}
 

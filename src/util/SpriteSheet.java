@@ -4,8 +4,8 @@ import org.newdawn.slick.Image;
 
 public class SpriteSheet extends org.newdawn.slick.SpriteSheet {
 
-	private int spriteWidth, spriteHeight;
-	
+	private final int spriteWidth, spriteHeight;
+
 	public int getSpriteWidth() {
 		return spriteWidth;
 	}
@@ -14,14 +14,14 @@ public class SpriteSheet extends org.newdawn.slick.SpriteSheet {
 		return spriteHeight;
 	}
 
-	public SpriteSheet(Image image, int tw, int th) {
-		super(image, tw, th);
-		spriteWidth = tw;
-		spriteHeight = th;
+	public SpriteSheet(Image image, int spriteWidth, int spriteHeight) {
+		super(image, spriteWidth, spriteHeight);
+		this.spriteWidth = spriteWidth;
+		this.spriteHeight = spriteHeight;
 	}
-	
-	public int getNumberOfSpritesWide(){
-		return this.width/spriteWidth;
+
+	public int getNumberOfSpritesWide() {
+		return this.width / spriteWidth;
 	}
 
 }

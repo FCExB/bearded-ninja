@@ -17,6 +17,9 @@ public class Assets {
 
 	public static Image SHADOW;
 
+	public static Image BULLET;
+	public static Image EXPLOSION;
+
 	public Assets() throws SlickException {
 		TILE_ONE = new Image("bin/data/grass.png");
 		ROCK = new Image("bin/data/rock.png");
@@ -30,6 +33,8 @@ public class Assets {
 		TREE = new Image("bin/data/Tree no shadow.png");
 
 		SHADOW = new Image("bin/data/shadow.png");
+		BULLET = new Image("bin/data/Bullet.png");
+		EXPLOSION = new Image("bin/data/splosion.png");
 
 	}
 }

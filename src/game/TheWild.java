@@ -1,9 +1,8 @@
 package game;
 
-import game.entities.Attributes;
-import game.entities.Creature;
 import game.entities.Entity;
-import game.entities.Player;
+import game.entities.moving.Creature;
+import game.entities.moving.Player;
 import game.world.World;
 
 import java.util.Collections;
@@ -18,6 +17,7 @@ import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SlickException;
 
 import util.Assets;
+import util.Attributes;
 
 public class TheWild extends BasicGame {
 
@@ -56,20 +56,19 @@ public class TheWild extends BasicGame {
 			throws SlickException {
 
 		int x = Mouse.getX();
-		int y = 600 - Mouse.getY();
+		int z = 600 - Mouse.getY();
+		x = x + camera.getX() - 400;
+		z = Math.round((z - 300) / camera.zScaler() + camera.getY());
 
 		if (Mouse.isButtonDown(0)) {
 
-			x = (x + camera.getX()) / world.getTileSize();
-			y = (y + camera.getY()) / world.getTileSize();
+			player.shootAt(new Vector3f(x, 0, z));
 
-			world.addFence(x, y);
 		} else if (Mouse.isButtonDown(1)) {
-			Vector3f newPos = new Vector3f(x + camera.getX(),
-					y + camera.getY(), 0);
+			Vector3f mousePoint = new Vector3f(x, 0, z);
 
 			world.addEntity(new Creature(Assets.CREATURE, new Attributes(),
-					newPos, world), newPos);
+					mousePoint, world), mousePoint);
 		}
 
 		for (Entity e : entities) {

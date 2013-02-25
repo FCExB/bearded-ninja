@@ -1,4 +1,4 @@
-package game.entities;
+package util;
 
 public enum Attribute {
 	FOOD(0), SEX(1);

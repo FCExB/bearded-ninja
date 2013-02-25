@@ -2,9 +2,9 @@ package game.world;
 
 import game.Camera;
 import game.entities.Entity;
-import game.entities.Player;
-import game.entities.Rock;
-import game.entities.Tree;
+import game.entities.moving.Player;
+import game.entities.stationary.Rock;
+import game.entities.stationary.Tree;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -162,6 +162,7 @@ public class World {
 	}
 
 	public boolean addEntity(Entity entity, Vector3f pos) {
+
 		if (positionClear(pos, entity)) {
 			toAdd.add(entity);
 			return true;
