@@ -20,9 +20,11 @@ public class Assets {
 	public static Image BULLET;
 	public static Image EXPLOSION;
 
+	public static Image MINECRAFT;
+
 	public Assets() throws SlickException {
 		TILE_ONE = new Image("bin/data/grass.png");
-		ROCK = new Image("bin/data/rock.png");
+		ROCK = new Image("bin/data/new rock.png");
 
 		CREATURE = new Image("bin/data/creature.png");
 
@@ -35,6 +37,7 @@ public class Assets {
 		SHADOW = new Image("bin/data/shadow.png");
 		BULLET = new Image("bin/data/Bullet.png");
 		EXPLOSION = new Image("bin/data/splosion.png");
+		MINECRAFT = new Image("bin/data/minecraft.png");
 
 	}
 }

@@ -1,5 +1,6 @@
 package game.entities;
 
+import game.entities.moving.Bullet;
 import game.world.World;
 
 import org.lwjgl.util.vector.Vector3f;
@@ -14,16 +15,20 @@ public abstract class MovingEntity extends Entity {
 
 	public MovingEntity(SpriteSheet ss, Vector3f position,
 			Vector3f initalVelocity, World world) {
-		super(ss, true, 16, position, world);
+		super(ss, true, true, 16, position, world);
 
 		velocity = initalVelocity;
 	}
 
 	public MovingEntity(Image image, Vector3f position,
 			Vector3f initalVelocity, World world) {
-		super(image, true, 16, position, world);
+		super(image, true, true, 16, position, world);
 
 		velocity = initalVelocity;
+	}
+
+	public Vector3f getVelocity() {
+		return new Vector3f(velocity);
 	}
 
 	protected float getVelocitySize() {
@@ -49,9 +54,29 @@ public abstract class MovingEntity extends Entity {
 		}
 	}
 
+	public void accelerate(Vector3f acceleration) {
+		Vector3f.add(velocity, acceleration, velocity);
+	}
+
+	@Override
+	public void hitBy(Entity entity) {
+		super.hitBy(entity);
+
+		if (entity instanceof Bullet) {
+			Bullet bullet = (Bullet) entity;
+
+			accelerate(bullet.getVelocity());
+		}
+	}
+
 	private void applyWorldForces(int deltaT) {
 		if (position.y <= 0) {
-			position.y = 0;
+
+			if (velocity.y < 0) {
+				velocity.y = 0f;
+			}
+
+			position.y = 0f;
 			float friction = 0.9f;
 			velocity.scale(friction);
 		} else {

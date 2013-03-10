@@ -12,8 +12,8 @@ import util.SpriteSheet;
 public class Explosion extends Entity {
 
 	public Explosion(Vector3f position, World world) {
-		super(new SpriteSheet(Assets.EXPLOSION, 16, 16), false, 0, position,
-				world);
+		super(new SpriteSheet(Assets.EXPLOSION, 16, 16), false, false, 0,
+				position, world);
 	}
 
 	@Override

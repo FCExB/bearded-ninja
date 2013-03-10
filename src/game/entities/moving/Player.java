@@ -18,6 +18,9 @@ public class Player extends MovingEntity {
 
 	private final int reloadTime = 100;
 	private int time;
+	private int health = 100;
+
+	public boolean jumping = false;
 
 	public Player(int x, int z, World world) throws SlickException {
 		// super(new SpriteSheet(Assets.PLAYER, 50, 50), new Vector3f(x, 0, z),
@@ -34,28 +37,29 @@ public class Player extends MovingEntity {
 
 		int x = 0, z = 0, y = 0;
 
-		if (position.y <= 0 && input.isKeyDown(Input.KEY_W)) {
+		if (!jumping && input.isKeyDown(Input.KEY_W)) {
 
 			z--;
 		}
 
-		if (position.y <= 0 && input.isKeyDown(Input.KEY_S)) {
+		if (!jumping && input.isKeyDown(Input.KEY_S)) {
 
 			z++;
 		}
 
-		if (position.y <= 0 && input.isKeyDown(Input.KEY_A)) {
+		if (!jumping && input.isKeyDown(Input.KEY_A)) {
 
 			x--;
 		}
 
-		if (position.y <= 0 && input.isKeyDown(Input.KEY_D)) {
+		if (!jumping && input.isKeyDown(Input.KEY_D)) {
 
 			x++;
 		}
 
-		if (position.y <= 0 && input.isKeyDown(Input.KEY_SPACE)) {
+		if (!jumping && input.isKeyDown(Input.KEY_SPACE)) {
 			y++;
+			jumping = true;
 		}
 
 		Vector3f change = new Vector3f(x, y, z);
@@ -75,6 +79,12 @@ public class Player extends MovingEntity {
 
 	@Override
 	protected void act(int deltaT, GameContainer gc) {
+		if (health <= 0) {
+			// System.out.println("YOU ARE DEAD!");
+		}
+
+		// System.out.println(health);
+
 		time += deltaT;
 
 		if (getVelocitySize() > 0.08) {
@@ -89,19 +99,13 @@ public class Player extends MovingEntity {
 			Vector3f newPos = new Vector3f(position.x + getWidth(), 0,
 					position.getZ() + getDepth());
 
-			world.addEntity(new Creature(Assets.CREATURE, new Attributes(),
-					newPos, world), newPos);
-		}
-	}
-
-	@Override
-	public void hitBy(Entity entity) {
-		if (entity instanceof Creature) {
-			if (entity.getPosition().y < position.y) {
-				world.removeEntity(entity);
-			}
+			world.addEntity(new Creature(new Attributes(), newPos, world),
+					newPos);
 		}
 
+		if (position.y <= 0) {
+			jumping = false;
+		}
 	}
 
 	public void shootAt(Vector3f aim) {
@@ -118,6 +122,17 @@ public class Player extends MovingEntity {
 			Bullet bullet = new Bullet(launchSite, velocity, world);
 
 			world.addEntity(bullet, launchSite);
+		}
+	}
+
+	@Override
+	public void hitBy(Entity entity) {
+		super.hitBy(entity);
+
+		if (entity instanceof Creature) {
+			Creature c = (Creature) entity;
+
+			health -= c.getStrength();
 		}
 	}
 }

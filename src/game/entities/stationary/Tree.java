@@ -9,8 +9,8 @@ import util.Assets;
 
 public class Tree extends Entity {
 
-	public Tree(boolean hasShadow, Vector3f position, World world) {
-		super(Assets.TREE, hasShadow, 25, position, world);
+	public Tree(Vector3f position, World world) {
+		super(Assets.TREE, true, true, 25, position, world);
 	}
 
 	@Override

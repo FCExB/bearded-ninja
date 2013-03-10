@@ -1,6 +1,5 @@
 package game.entities.moving;
 
-import game.entities.Entity;
 import game.entities.MovingEntity;
 import game.entities.stationary.Explosion;
 import game.world.World;
@@ -19,11 +18,6 @@ public class Bullet extends MovingEntity {
 	@Override
 	protected Vector3f acceleration(int deltaT, GameContainer gc) {
 		return new Vector3f(0, 0, 0);
-	}
-
-	@Override
-	public void hitBy(Entity entity) {
-		super.hitBy(entity);
 	}
 
 	@Override

@@ -9,13 +9,7 @@ import util.Assets;
 
 public class Rock extends Entity {
 
-	public Rock(boolean hasShadow, Vector3f position, World world) {
-		super(Assets.ROCK, hasShadow, 16, position, world);
+	public Rock(Vector3f position, World world) {
+		super(Assets.ROCK, false, false, 16, position, world);
 	}
-
-	@Override
-	public boolean collides(Vector3f pos) {
-		return false;
-	}
-
 }

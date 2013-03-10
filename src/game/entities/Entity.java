@@ -2,6 +2,7 @@ package game.entities;
 
 import game.Camera;
 import game.entities.moving.Bullet;
+import game.entities.moving.Player;
 import game.entities.stationary.Explosion;
 import game.world.World;
 
@@ -28,10 +29,11 @@ public abstract class Entity implements Comparable<Entity> {
 	protected final int depth;
 
 	private final boolean hasShadow;
+	private final boolean solid;
 
 	protected final World world;
 
-	public Entity(SpriteSheet ss, boolean hasShadow, int depth,
+	public Entity(SpriteSheet ss, boolean hasShadow, boolean solid, int depth,
 			Vector3f position, World world) {
 		this.position = position;
 		this.world = world;
@@ -40,12 +42,17 @@ public abstract class Entity implements Comparable<Entity> {
 		height = ss.getSpriteHeight();
 		this.depth = depth;
 		this.hasShadow = hasShadow;
+		this.solid = solid;
 	}
 
-	public Entity(Image image, boolean hasShadow, int depth, Vector3f position,
-			World world) {
+	public Entity(Image image, boolean hasShadow, boolean solid, int depth,
+			Vector3f position, World world) {
 		this(new SpriteSheet(image, image.getWidth(), image.getHeight()),
-				hasShadow, depth, position, world);
+				hasShadow, solid, depth, position, world);
+	}
+
+	public boolean isSolid() {
+		return solid;
 	}
 
 	public int getHeight() {
@@ -69,37 +76,43 @@ public abstract class Entity implements Comparable<Entity> {
 	}
 
 	public void render(Camera camera, Graphics g) {
-		if (camera.inView(position)) {
+		if (camera.inRenderView(position)) {
 
 			float zScaler = camera.zScaler();
 			float otherScaler = camera.otherScaler();
 
 			if (hasShadow) {
-				int x = Math.round(position.getX() - camera.getX()) + 400
+				int x = Math.round(position.getX() - camera.getX()) + 500
 						- width / 2;
+
 				int y = Math.round((position.getZ() - camera.getY()) * zScaler
 						+ 300 - (depth * zScaler) / 2);
+
 				float xScale = 1;
 				float yScale = zScaler;
 
-				if (position.y > 0) {
-					xScale *= Math.abs(1 / (1 + position.y));
-					zScaler *= Math.abs((1 / (1 + position.y)));
-				}
+				// if (position.y > 0) {
+				// x += Math.abs((width / 2) * (1 - 1 / (1 + position.y) * 2));
+				// y += Math.abs(((depth * zScaler) / 2)
+				// * (1 - 1 / (1 + position.y)) * 2);
+				//
+				// xScale *= Math.abs(1 / position.y) * 2;
+				// zScaler *= Math.abs(1 / position.y) * 2;
+				// }
 
 				Assets.SHADOW.draw(x, y, width * xScale, depth * yScale);
 			}
 
 			Image image = animation.getSubImage(animationFrame, 0);
 
-			int x = Math.round(position.getX() - camera.getX()) + 400 - width
+			int x = Math.round(position.getX() - camera.getX()) + 500 - width
 					/ 2;
 			int y = Math.round((position.getZ() - camera.getY()) * zScaler
 					+ 300 - height * otherScaler - position.y * otherScaler);
 			float xScale = 1;
 			float yScale = otherScaler;
 
-			image.draw(x, y, width * xScale, height * yScale);
+			image.draw(x, y, width * xScale, height * yScale, world.getFilter());
 		}
 	}
 
@@ -118,22 +131,32 @@ public abstract class Entity implements Comparable<Entity> {
 	}
 
 	public boolean collides(Vector3f pos) {
-		int halfWidth = width / 2;
-		int halfDepth = depth / 2;
+		if (solid) {
+			int halfWidth = width / 2;
+			int halfDepth = depth / 2;
 
-		return pos.x >= position.x - halfWidth
-				&& pos.x <= position.x + halfWidth
-				&& pos.z >= position.z - halfDepth
-				&& pos.z <= position.z + halfDepth && pos.y >= position.y
-				&& pos.y <= position.y + height;
+			return pos.x >= position.x - halfWidth
+					&& pos.x <= position.x + halfWidth
+					&& pos.z >= position.z - halfDepth
+					&& pos.z <= position.z + halfDepth && pos.y >= position.y
+					&& pos.y <= position.y + height;
+		}
+
+		return false;
 	}
 
 	public void hitBy(Entity entity) {
 		if (entity instanceof Bullet) {
+			Vector3f explosionLocation = new Vector3f(entity.position.x,
+					entity.position.y, position.z);
+
 			world.removeEntity(entity);
 
-			world.addEntity(new Explosion(entity.position, world),
-					entity.position);
+			world.addEntity(new Explosion(explosionLocation, world),
+					explosionLocation);
+		} else if (entity instanceof Player) {
+			Player player = (Player) entity;
+			player.jumping = false;
 		}
 	}
 

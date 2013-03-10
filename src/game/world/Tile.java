@@ -16,8 +16,4 @@ public class Tile {
 	protected void setImage(Image newImage) {
 		image = newImage;
 	}
-
-	public boolean walkable() {
-		return true;
-	}
 }
