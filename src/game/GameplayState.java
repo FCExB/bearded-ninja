@@ -57,7 +57,7 @@ public class GameplayState extends BasicGameState {
 
 		world = new World(WORLD_WIDTH, WORLD_HEIGHT, entitiesInView);
 		player = new Player((WORLD_WIDTH / 2) * world.getTileSize(),
-				(WORLD_HEIGHT / 2) * world.getTileSize(), world);
+				(WORLD_HEIGHT / 2) * world.getTileSize(), world, game);
 
 		world.addPLayer(player);
 
@@ -177,4 +177,9 @@ public class GameplayState extends BasicGameState {
 		return stateID;
 	}
 
+	@Override
+	public void enter(GameContainer container, StateBasedGame game)
+			throws SlickException {
+		init(container, game);
+	}
 }
