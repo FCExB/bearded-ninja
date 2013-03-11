@@ -17,7 +17,8 @@ public class SlickMain {
 		container.setDisplayMode(800, 600, false);
 
 		container.start();
-
+		
+		return;
 	}
 
 }
