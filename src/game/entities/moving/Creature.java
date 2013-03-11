@@ -6,7 +6,6 @@ import game.world.World;
 
 import org.lwjgl.util.vector.Vector3f;
 import org.newdawn.slick.GameContainer;
-import org.newdawn.slick.Image;
 
 import util.Assets;
 import util.Attribute;
@@ -14,27 +13,41 @@ import util.Attributes;
 
 public class Creature extends MovingEntity {
 
-	private final float acceleration = 10f;
+	private final float acceleration;
+	private int health;
 
 	private int timeSinceBaby, timeSinceFood;
 
 	private final Attributes attributes;
 
-	public Creature(Image image, Attributes attributes, Vector3f position,
-			World world) {
-		super(image, position, new Vector3f(0, 0, 0), world);
+	public Creature(Attributes attributes, Vector3f position, World world) {
+		super(Assets.CREATURE, position, new Vector3f(0, 0, 0), world);
 		this.attributes = attributes;
+		health = (int) attributes.getAttribute(Attribute.HEALTH);
+		acceleration = attributes.getAttribute(Attribute.SPEED);
 	}
 
 	@Override
 	protected Vector3f acceleration(int deltaT, GameContainer gc) {
 
-		Vector3f result = new Vector3f(
-				world.getPlayerLocation().x - position.x, 0,
-				world.getPlayerLocation().z - position.z);
+		if (Math.random() < attributes.getAttribute(Attribute.ANGER)) {
+
+			Vector3f result = new Vector3f(world.getPlayerLocation().x
+					- position.x, 0, world.getPlayerLocation().z - position.z);
+
+			result.normalise().scale(acceleration * (deltaT / 1000f));
+
+			return result;
+		}
+
+		Vector3f result = new Vector3f(Math.round(Math.random() * 2 - 1), 0,
+				Math.round(Math.random() * 2 - 1));
+
+		if (result.length() == 0) {
+			return result;
+		}
 
 		result.normalise().scale(acceleration * (deltaT / 1000f));
-
 		return result;
 	}
 
@@ -42,6 +55,10 @@ public class Creature extends MovingEntity {
 	protected void act(int deltaT, GameContainer gc) {
 		timeSinceBaby += deltaT;
 		timeSinceFood += deltaT;
+	}
+
+	public int getStrength() {
+		return (int) attributes.getAttribute(Attribute.STRENGTH);
 	}
 
 	@Override
@@ -52,11 +69,11 @@ public class Creature extends MovingEntity {
 			Creature that = (Creature) entity;
 
 			if (that.timeSinceFood >= attributes.getAttribute(Attribute.FOOD)) {
-
-				if (Math.random() > 0.5) {
+				health--;
+				if (health <= 0) {
 					world.removeEntity(this);
+					that.timeSinceFood = 0;
 				}
-				that.timeSinceFood = 0;
 
 			} else if (timeSinceBaby >= attributes.getAttribute(Attribute.SEX)) {
 
@@ -65,17 +82,25 @@ public class Creature extends MovingEntity {
 				babyPosition.scale(2.5f);
 				Vector3f.add(this.position, babyPosition, babyPosition);
 
-				if (world.addEntity(
-						new Creature(Assets.CREATURE, Attributes.breed(
-								this.attributes, that.attributes),
-								babyPosition, world), babyPosition)) {
+				Attributes newAs = Attributes.breed(this.attributes,
+						that.attributes);
+
+				System.out.println(newAs);
+
+				if (world.addEntity(new Creature(newAs, babyPosition, world),
+						babyPosition)) {
 					this.timeSinceBaby = 0;
 					that.timeSinceBaby = 0;
 				}
 			}
 		} else if (entity instanceof Bullet) {
-			world.removeEntity(this);
-			world.removeEntity(entity);
+
+			health--;
+
+			if (health <= 0) {
+				world.removeEntity(this);
+				world.removeEntity(entity);
+			}
 		}
 	}
 }

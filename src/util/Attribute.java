@@ -1,7 +1,7 @@
 package util;
 
 public enum Attribute {
-	FOOD(0), SEX(1);
+	FOOD(0), SEX(1), HEALTH(2), SPEED(3), STRENGTH(4), ANGER(5);
 
 	private int index;
 

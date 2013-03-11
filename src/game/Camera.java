@@ -12,7 +12,7 @@ public class Camera {
 	private int y;
 	private int viewWidth;
 	private int viewHeight;
-	private float angle;
+	private float angle = 42;
 
 	public Camera(int x, int y, int viewWidth, int viewHeight) {
 		this.x = x;
@@ -62,10 +62,19 @@ public class Camera {
 		this.viewHeight = viewHeight;
 	}
 
-	public boolean inView(Vector3f pos) {
+	public boolean inRenderView(Vector3f pos) {
 
 		int halfWidth = viewWidth / 2;
 		float halfHeight = (viewHeight / zScaler()) / 2;
+
+		return pos.x >= x - halfWidth && pos.x < x + halfWidth
+				&& pos.z >= y - halfHeight && pos.z < y + halfHeight;
+	}
+
+	public boolean inUpdateView(Vector3f pos) {
+
+		double halfWidth = viewWidth / 1.5;
+		double halfHeight = (viewHeight / zScaler()) / 1.5;
 
 		return pos.x >= x - halfWidth && pos.x < x + halfWidth
 				&& pos.z >= y - halfHeight && pos.z < y + halfHeight;
