@@ -32,7 +32,7 @@ public class TitleState extends BasicGameState {
 	@Override
 	public void update(GameContainer container, StateBasedGame game, int delta)
 			throws SlickException {
-		if (container.getInput().isKeyDown(Input.KEY_SPACE)) {
+		if (container.getInput().isKeyPressed(Input.KEY_SPACE)) {
 			game.enterState(TheWild.GAMEPLAY_STATE);
 			game.getCurrentState().init(container, game);
 		}

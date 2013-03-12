@@ -14,6 +14,7 @@ public class Assets {
 	public static Image PLAYER;
 
 	public static Image TREE;
+	public static Image TORCH;
 
 	public static Image SHADOW;
 
@@ -39,5 +40,6 @@ public class Assets {
 		EXPLOSION = new Image("bin/data/splosion.png");
 		MINECRAFT = new Image("bin/data/minecraft.png");
 
+		TORCH = new Image("bin/data/torch.png");
 	}
 }

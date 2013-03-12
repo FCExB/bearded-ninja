@@ -7,6 +7,7 @@ import game.entities.stationary.Explosion;
 import game.world.World;
 
 import org.lwjgl.util.vector.Vector3f;
+import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
@@ -112,7 +113,10 @@ public abstract class Entity implements Comparable<Entity> {
 			float xScale = 1;
 			float yScale = otherScaler;
 
-			image.draw(x, y, width * xScale, height * yScale, world.getFilter());
+			Color filter = world.brightnessAtLocation(position);
+			filter.add(world.getGlobalFilter());
+
+			image.draw(x, y, width * xScale, height * yScale, filter);
 		}
 	}
 

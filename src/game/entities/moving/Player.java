@@ -2,10 +2,12 @@ package game.entities.moving;
 
 import game.TheWild;
 import game.entities.Entity;
+import game.entities.LightEmitting;
 import game.entities.MovingEntity;
 import game.world.World;
 
 import org.lwjgl.util.vector.Vector3f;
+import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
@@ -14,7 +16,7 @@ import org.newdawn.slick.state.StateBasedGame;
 import util.Assets;
 import util.Attributes;
 
-public class Player extends MovingEntity {
+public class Player extends MovingEntity implements LightEmitting {
 
 	private final StateBasedGame game;
 	private final float acceleration = 30f;
@@ -62,7 +64,7 @@ public class Player extends MovingEntity {
 			x++;
 		}
 
-		if (!jumping && input.isKeyDown(Input.KEY_SPACE)) {
+		if (!jumping && input.isKeyPressed(Input.KEY_SPACE)) {
 			y++;
 			jumping = true;
 		}
@@ -137,5 +139,14 @@ public class Player extends MovingEntity {
 
 			health -= c.getStrength();
 		}
+	}
+
+	@Override
+	public Color filterAt(Vector3f pos) {
+		Vector3f difference = Vector3f.sub(pos, position, null);
+
+		float ratio = 0.2f / difference.length();
+
+		return new Color(255 * ratio, 255 * ratio, 255 * ratio);
 	}
 }

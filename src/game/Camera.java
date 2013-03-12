@@ -1,6 +1,7 @@
 package game;
 
 import game.entities.moving.Player;
+import game.world.World;
 
 import org.lwjgl.util.vector.Vector3f;
 import org.newdawn.slick.GameContainer;
@@ -69,6 +70,20 @@ public class Camera {
 
 		return pos.x >= x - halfWidth && pos.x < x + halfWidth
 				&& pos.z >= y - halfHeight && pos.z < y + halfHeight;
+	}
+
+	public void addTilesInUpdateView(World world) {
+
+		double halfWidth = viewWidth / 1.5;
+		double halfHeight = (viewHeight / zScaler()) / 1.5;
+
+		for (int i = (int) (x - halfWidth); i < x + halfWidth; i += world
+				.getTileSize()) {
+			for (int j = (int) (y - halfHeight); j < y + halfHeight; j += world
+					.getTileSize()) {
+				world.addTile(world.getContainedPoint(i, j));
+			}
+		}
 	}
 
 	public boolean inUpdateView(Vector3f pos) {
