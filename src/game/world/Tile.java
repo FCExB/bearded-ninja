@@ -3,6 +3,7 @@ package game.world;
 import org.newdawn.slick.Image;
 
 public class Tile {
+
 	private Image image;
 
 	public Tile(Image image) {

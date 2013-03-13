@@ -17,7 +17,6 @@ public class TheWild extends StateBasedGame {
 	public void initStatesList(GameContainer arg0) throws SlickException {
 		this.addState(new GameplayState(GAMEPLAY_STATE));
 		this.addState(new TitleState(TITLE_STATE));
-
 	}
 
 }

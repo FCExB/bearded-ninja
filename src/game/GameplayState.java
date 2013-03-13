@@ -4,12 +4,17 @@ import game.entities.Entity;
 import game.entities.moving.Creature;
 import game.entities.moving.Player;
 import game.entities.stationary.Fence;
+import game.entities.stationary.Torch;
+import game.world.Point;
+import game.world.Tile;
 import game.world.World;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 import org.lwjgl.input.Mouse;
 import org.lwjgl.util.vector.Vector3f;
@@ -34,8 +39,10 @@ public class GameplayState extends BasicGameState {
 	Camera camera;
 	World world;
 
-	List<Entity> entitiesInView;
-	List<Entity> entitiesNotInView;
+	List<Entity> entitiesInView = new LinkedList<Entity>();
+	List<Entity> entitiesNotInView = new LinkedList<Entity>();
+
+	SortedMap<Point, Tile> tiles = new TreeMap<Point, Tile>();
 
 	private int timeSinceSearch;
 
@@ -50,14 +57,15 @@ public class GameplayState extends BasicGameState {
 			throws SlickException {
 		new Assets();
 
+		entitiesInView.clear();
+		entitiesNotInView.clear();
+		tiles.clear();
+
 		camera = new Camera(500, 300, 1032, 632);
 
-		entitiesInView = new LinkedList<Entity>();
-		entitiesNotInView = new LinkedList<Entity>();
-
-		world = new World(WORLD_WIDTH, WORLD_HEIGHT, entitiesInView);
-		player = new Player((WORLD_WIDTH / 2) * world.getTileSize(),
-				(WORLD_HEIGHT / 2) * world.getTileSize(), world);
+		world = new World(WORLD_WIDTH, WORLD_HEIGHT, entitiesInView, tiles,
+				camera);
+		player = new Player(0, 0, world, game);
 
 		world.addPLayer(player);
 
@@ -71,6 +79,8 @@ public class GameplayState extends BasicGameState {
 		actOnInput(container, game, delta);
 
 		camera.update(container, player, delta);
+		camera.addTilesInUpdateView(world);
+
 		world.update(delta);
 
 		timeSinceSearch += delta;
@@ -122,6 +132,9 @@ public class GameplayState extends BasicGameState {
 		if (input.isKeyDown(Input.KEY_3)) {
 			currentSelection = 2;
 		}
+		if (input.isKeyDown(Input.KEY_4)) {
+			currentSelection = 3;
+		}
 
 		int x = Mouse.getX();
 		int z = 600 - Mouse.getY();
@@ -141,6 +154,9 @@ public class GameplayState extends BasicGameState {
 				break;
 			case 2:
 				world.addEntity(new Fence(mousePoint, world), mousePoint);
+				break;
+			case 3:
+				world.addEntity(new Torch(mousePoint, world), mousePoint);
 				break;
 			}
 		}
@@ -177,4 +193,9 @@ public class GameplayState extends BasicGameState {
 		return stateID;
 	}
 
+	@Override
+	public void enter(GameContainer container, StateBasedGame game)
+			throws SlickException {
+		init(container, game);
+	}
 }

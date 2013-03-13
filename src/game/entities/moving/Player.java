@@ -1,19 +1,24 @@
 package game.entities.moving;
 
+import game.TheWild;
 import game.entities.Entity;
+import game.entities.LightEmitting;
 import game.entities.MovingEntity;
 import game.world.World;
 
 import org.lwjgl.util.vector.Vector3f;
+import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
+import org.newdawn.slick.state.StateBasedGame;
 
 import util.Assets;
 import util.Attributes;
 
-public class Player extends MovingEntity {
+public class Player extends MovingEntity implements LightEmitting {
 
+	private final StateBasedGame game;
 	private final float acceleration = 30f;
 
 	private final int reloadTime = 100;
@@ -22,13 +27,15 @@ public class Player extends MovingEntity {
 
 	public boolean jumping = false;
 
-	public Player(int x, int z, World world) throws SlickException {
+	public Player(int x, int z, World world, StateBasedGame game)
+			throws SlickException {
 		// super(new SpriteSheet(Assets.PLAYER, 50, 50), new Vector3f(x, 0, z),
 		// world);
 
 		super(Assets.PLAYER, new Vector3f(x, 0, z), new Vector3f(0, 0, 0),
 				world);
 
+		this.game = game;
 	}
 
 	@Override
@@ -57,7 +64,7 @@ public class Player extends MovingEntity {
 			x++;
 		}
 
-		if (!jumping && input.isKeyDown(Input.KEY_SPACE)) {
+		if (!jumping && input.isKeyPressed(Input.KEY_SPACE)) {
 			y++;
 			jumping = true;
 		}
@@ -80,10 +87,8 @@ public class Player extends MovingEntity {
 	@Override
 	protected void act(int deltaT, GameContainer gc) {
 		if (health <= 0) {
-			// System.out.println("YOU ARE DEAD!");
+			game.enterState(TheWild.TITLE_STATE);
 		}
-
-		// System.out.println(health);
 
 		time += deltaT;
 
@@ -134,5 +139,14 @@ public class Player extends MovingEntity {
 
 			health -= c.getStrength();
 		}
+	}
+
+	@Override
+	public Color filterAt(Vector3f pos) {
+		Vector3f difference = Vector3f.sub(pos, position, null);
+
+		float ratio = 0.2f / difference.length();
+
+		return new Color(255 * ratio, 255 * ratio, 255 * ratio);
 	}
 }
