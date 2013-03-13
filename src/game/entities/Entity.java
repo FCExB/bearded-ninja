@@ -114,7 +114,12 @@ public abstract class Entity implements Comparable<Entity> {
 			float yScale = otherScaler;
 
 			Color filter = world.brightnessAtLocation(position);
-			filter.add(world.getGlobalFilter());
+			
+            Color lightEffect = world.getGlobalFilter();
+			
+			filter.r = Math.max(filter.r, lightEffect.r);
+			filter.g = Math.max(filter.g, lightEffect.g);
+			filter.b = Math.max(filter.b, lightEffect.b);
 
 			image.draw(x, y, width * xScale, height * yScale, filter);
 		}

@@ -27,7 +27,7 @@ public class World {
 
 	private final int tileSize = 16;
 
-	private int brightness = 255;
+	private float brightness = 2;
 
 	private final SortedMap<Point, Tile> tiles;
 
@@ -82,10 +82,6 @@ public class World {
 		tiles.put(point, tile);
 	}
 
-	public void addPLayer(Player player) {
-		this.player = player;
-	}
-
 	public int getTileSize() {
 		return tileSize;
 	}
@@ -95,16 +91,16 @@ public class World {
 	}
 
 	public Color getGlobalFilter() {
-		// return new Color(255, 255, 255, 255);
-		return new Color(brightness, brightness, brightness);
+		float temp = Math.abs(1-brightness);
+		return new Color(temp, temp, temp);
 	}
 
 	public void update(int deltaT) {
 
 		if (brightness > 0) {
-			brightness -= Math.round(deltaT / 16);
+			brightness -= deltaT/10000f;
 		} else {
-			brightness = 255;
+			brightness = 2;
 		}
 	}
 
@@ -140,7 +136,7 @@ public class World {
 	}
 
 	public Point getContainedPoint(int i, int j) {
-		return new Point(i / 16, j / 16);
+		return new Point(i / getTileSize(), j / getTileSize());
 	}
 
 	public boolean positionClear(Vector3f pos, Entity entity) {
@@ -187,6 +183,11 @@ public class World {
 
 		return false;
 	}
+	
+	public boolean addPlayer(Player player, Vector3f pos){
+		this.player = player;
+		return addEntity(player, pos);
+	}
 
 	public void removeEntity(Entity entity) {
 		toRemove.add(entity);
@@ -207,7 +208,11 @@ public class World {
 		Color result = new Color(0);
 
 		for (LightEmitting light : lights) {
-			result.add(light.filterAt(pos));
+			Color lightEffect = light.filterAt(pos);
+			
+			result.r = Math.max(result.r, lightEffect.r);
+			result.g = Math.max(result.g, lightEffect.g);
+			result.b = Math.max(result.b, lightEffect.b);
 		}
 
 		return result;

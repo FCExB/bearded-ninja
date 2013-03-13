@@ -67,7 +67,10 @@ public class GameplayState extends BasicGameState {
 				camera);
 		player = new Player(0, 0, world, game);
 
-		world.addPLayer(player);
+		if(!world.addPlayer(player, new Vector3f(0,0,0))){
+			init(gc,game);
+			return;
+		}
 
 		entitiesInView.add(player);
 	}

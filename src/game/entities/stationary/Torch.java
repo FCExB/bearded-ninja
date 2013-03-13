@@ -19,7 +19,7 @@ public class Torch extends Entity implements LightEmitting {
 	public Color filterAt(Vector3f pos) {
 		Vector3f difference = Vector3f.sub(pos, position, null);
 
-		float ratio = 0.1f / difference.length();
+		float ratio = 0.4f / difference.length();
 
 		return new Color(255 * ratio, 255 * ratio, 255 * ratio);
 	}

@@ -25,7 +25,7 @@ public class Player extends MovingEntity implements LightEmitting {
 	private int time;
 	private int health = 100;
 
-	public boolean jumping = false;
+	public boolean jumping, torchOn = false;
 
 	public Player(int x, int z, World world, StateBasedGame game)
 			throws SlickException {
@@ -108,6 +108,14 @@ public class Player extends MovingEntity implements LightEmitting {
 					newPos);
 		}
 
+		if (input.isKeyPressed(Input.KEY_T)) {
+			if (torchOn) {
+				torchOn = false;
+			} else {
+				torchOn = true;
+			}
+		}
+
 		if (position.y <= 0) {
 			jumping = false;
 		}
@@ -143,10 +151,14 @@ public class Player extends MovingEntity implements LightEmitting {
 
 	@Override
 	public Color filterAt(Vector3f pos) {
-		Vector3f difference = Vector3f.sub(pos, position, null);
+		if (torchOn) {
+			Vector3f difference = Vector3f.sub(pos, position, null);
 
-		float ratio = 0.2f / difference.length();
+			float ratio = 0.2f / difference.length();
 
-		return new Color(255 * ratio, 255 * ratio, 255 * ratio);
+			return new Color(255 * ratio, 255 * ratio, 255 * ratio);
+		}
+		
+		return new Color(0,0,0);
 	}
 }
