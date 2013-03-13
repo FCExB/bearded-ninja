@@ -15,6 +15,7 @@ import org.newdawn.slick.state.StateBasedGame;
 
 import util.Assets;
 import util.Attributes;
+import util.SpriteSheet;
 
 public class Player extends MovingEntity implements LightEmitting {
 
@@ -29,13 +30,15 @@ public class Player extends MovingEntity implements LightEmitting {
 
 	public Player(int x, int z, World world, StateBasedGame game)
 			throws SlickException {
-		// super(new SpriteSheet(Assets.PLAYER, 50, 50), new Vector3f(x, 0, z),
+		super(new SpriteSheet(Assets.IRISH_DRESS, 64, 64, 9), new Vector3f(x,
+				0, z), new Vector3f(0, 0, 0), world);
+
+		// super(Assets.PLAYER, new Vector3f(x, 0, z), new Vector3f(0, 0, 0),
 		// world);
 
-		super(Assets.PLAYER, new Vector3f(x, 0, z), new Vector3f(0, 0, 0),
-				world);
-
 		this.game = game;
+
+		spriteSheetRow = 9;
 	}
 
 	@Override
@@ -92,9 +95,13 @@ public class Player extends MovingEntity implements LightEmitting {
 
 		time += deltaT;
 
-		if (getVelocitySize() > 0.08) {
+		if (getVelocitySize() > 0.2) {
 			animating = true;
 		} else {
+			animating = false;
+		}
+
+		if (jumping) {
 			animating = false;
 		}
 
@@ -118,6 +125,34 @@ public class Player extends MovingEntity implements LightEmitting {
 
 		if (position.y <= 0) {
 			jumping = false;
+		}
+
+		Vector3f velocity = getVelocity();
+
+		if (velocity.x > 0 && velocity.z > 0) {
+			if (velocity.x > velocity.z) {
+				spriteSheetRow = 11;
+			} else {
+				spriteSheetRow = 10;
+			}
+		} else if (velocity.x > 0 && velocity.z <= 0) {
+			if (velocity.x > -velocity.z) {
+				spriteSheetRow = 11;
+			} else {
+				spriteSheetRow = 8;
+			}
+		} else if (velocity.x <= 0 && velocity.z <= 0) {
+			if (-velocity.x > -velocity.z) {
+				spriteSheetRow = 9;
+			} else {
+				spriteSheetRow = 8;
+			}
+		} else if (velocity.x <= 0 && velocity.z > 0) {
+			if (-velocity.x > velocity.z) {
+				spriteSheetRow = 9;
+			} else {
+				spriteSheetRow = 10;
+			}
 		}
 	}
 
@@ -158,7 +193,7 @@ public class Player extends MovingEntity implements LightEmitting {
 
 			return new Color(255 * ratio, 255 * ratio, 255 * ratio);
 		}
-		
-		return new Color(0,0,0);
+
+		return new Color(0, 0, 0);
 	}
 }

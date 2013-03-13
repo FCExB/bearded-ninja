@@ -91,14 +91,14 @@ public class World {
 	}
 
 	public Color getGlobalFilter() {
-		float temp = Math.abs(1-brightness);
+		float temp = Math.abs(1 - brightness);
 		return new Color(temp, temp, temp);
 	}
 
 	public void update(int deltaT) {
 
 		if (brightness > 0) {
-			brightness -= deltaT/10000f;
+			brightness -= deltaT / 10000f;
 		} else {
 			brightness = 2;
 		}
@@ -183,8 +183,8 @@ public class World {
 
 		return false;
 	}
-	
-	public boolean addPlayer(Player player, Vector3f pos){
+
+	public boolean addPlayer(Player player, Vector3f pos) {
 		this.player = player;
 		return addEntity(player, pos);
 	}
@@ -209,7 +209,7 @@ public class World {
 
 		for (LightEmitting light : lights) {
 			Color lightEffect = light.filterAt(pos);
-			
+
 			result.r = Math.max(result.r, lightEffect.r);
 			result.g = Math.max(result.g, lightEffect.g);
 			result.b = Math.max(result.b, lightEffect.b);

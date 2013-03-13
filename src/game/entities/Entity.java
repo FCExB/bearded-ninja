@@ -22,6 +22,7 @@ public abstract class Entity implements Comparable<Entity> {
 	private final SpriteSheet animation;
 
 	private int animationFrame;
+	protected int spriteSheetRow;
 	private int time;
 	protected boolean animating = false;
 
@@ -104,7 +105,7 @@ public abstract class Entity implements Comparable<Entity> {
 				Assets.SHADOW.draw(x, y, width * xScale, depth * yScale);
 			}
 
-			Image image = animation.getSubImage(animationFrame, 0);
+			Image image = animation.getSubImage(animationFrame, spriteSheetRow);
 
 			int x = Math.round(position.getX() - camera.getX()) + 500 - width
 					/ 2;
@@ -114,9 +115,9 @@ public abstract class Entity implements Comparable<Entity> {
 			float yScale = otherScaler;
 
 			Color filter = world.brightnessAtLocation(position);
-			
-            Color lightEffect = world.getGlobalFilter();
-			
+
+			Color lightEffect = world.getGlobalFilter();
+
 			filter.r = Math.max(filter.r, lightEffect.r);
 			filter.g = Math.max(filter.g, lightEffect.g);
 			filter.b = Math.max(filter.b, lightEffect.b);
@@ -129,7 +130,7 @@ public abstract class Entity implements Comparable<Entity> {
 		act(deltaT, gc);
 
 		time += deltaT;
-		if (time >= 50 && animating) {
+		if (time >= 60 && animating) {
 			animationFrame = (animationFrame + 1)
 					% animation.getNumberOfSpritesWide();
 			time = 0;

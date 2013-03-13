@@ -12,6 +12,7 @@ public class Assets {
 	public static Image CREATURE;
 
 	public static Image PLAYER;
+	public static Image IRISH_DRESS;
 
 	public static Image TREE;
 	public static Image TORCH;
@@ -41,5 +42,6 @@ public class Assets {
 		MINECRAFT = new Image("bin/data/minecraft.png");
 
 		TORCH = new Image("bin/data/torch.png");
+		IRISH_DRESS = new Image("bin/data/irishdress.png");
 	}
 }

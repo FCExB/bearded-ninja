@@ -39,6 +39,8 @@ public abstract class MovingEntity extends Entity {
 
 	@Override
 	public void update(int deltaT, GameContainer gc) {
+		super.update(deltaT, gc);
+
 		act(deltaT, gc);
 
 		Vector3f.add(velocity, acceleration(deltaT, gc), velocity);
