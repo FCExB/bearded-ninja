@@ -124,13 +124,15 @@ public class World {
 				float xScale = 1;
 				float yScale = zScaler;
 
-				Color tileFilter = brightnessAtLocation(new Vector3f(tileX, 0,
+				Color filter = brightnessAtLocation(new Vector3f(tileX, 0,
 						tileZ));
 
-				tileFilter.add(globalFilter);
+				filter.r = Math.max(filter.r, globalFilter.r);
+				filter.g = Math.max(filter.g, globalFilter.g);
+				filter.b = Math.max(filter.b, globalFilter.b);
 
 				currentTile.getImage().draw(xLocation, yLocation,
-						tileSize * xScale, tileSize * yScale, tileFilter);
+						tileSize * xScale, tileSize * yScale, filter);
 			}
 		}
 	}
