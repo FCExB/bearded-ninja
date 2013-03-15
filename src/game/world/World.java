@@ -24,10 +24,15 @@ import util.Attributes;
 public class World {
 	private static final int INITIAL_WIDTH = 1;
 	private static final int INITIAL_HEIGHT = 1;
+	private static final int LENGTH_OF_NIGHT_DAY = 11000;
+	private static final int SUNRISE_SET_LENGTH = 6000;
 
 	private final int tileSize = 16;
 
-	private float brightness = 2;
+	private float brightness = 1;
+	private int timeSince;
+	private boolean isDay = true;
+	private boolean transitioning = false;
 
 	private final SortedMap<Point, Tile> tiles;
 
@@ -92,17 +97,36 @@ public class World {
 
 	public void update(int deltaT) {
 
-		if (brightness > 0) {
-			brightness -= deltaT / 10000f;
+		if (transitioning) {
+
+			float change = (float) deltaT / (float) SUNRISE_SET_LENGTH;
+
+			if (isDay) {
+				brightness -= change;
+			} else {
+				brightness += change;
+			}
+
+			if (timeSince < SUNRISE_SET_LENGTH) {
+				timeSince += deltaT;
+			} else {
+				timeSince = 0;
+				transitioning = false;
+				isDay = !isDay;
+			}
+
 		} else {
-			brightness = 2;
+			if (timeSince < LENGTH_OF_NIGHT_DAY) {
+				timeSince += deltaT;
+			} else {
+				timeSince = 0;
+				transitioning = true;
+			}
 		}
 	}
 
 	public void render(Camera camera) {
 		float zScaler = camera.zScaler();
-
-		Color globalFilter = getGlobalFilter();
 
 		for (Map.Entry<Point, Tile> entry : tiles.entrySet()) {
 
@@ -196,7 +220,7 @@ public class World {
 	}
 
 	public Color filterAtLocation(Vector3f pos) {
-		Color result = getGlobalFilter();
+		Color result = new Color(brightness, brightness, brightness);
 
 		for (LightEmitting light : lights) {
 			Color lightEffect = light.filterAt(pos);
@@ -207,10 +231,5 @@ public class World {
 		}
 
 		return result;
-	}
-
-	private Color getGlobalFilter() {
-		float temp = Math.abs(1 - brightness);
-		return new Color(temp, temp, temp);
 	}
 }
