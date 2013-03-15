@@ -90,11 +90,6 @@ public class World {
 		return player.getPosition();
 	}
 
-	public Color getGlobalFilter() {
-		float temp = Math.abs(1 - brightness);
-		return new Color(temp, temp, temp);
-	}
-
 	public void update(int deltaT) {
 
 		if (brightness > 0) {
@@ -124,15 +119,9 @@ public class World {
 				float xScale = 1;
 				float yScale = zScaler;
 
-				Color filter = brightnessAtLocation(new Vector3f(tileX, 0,
-						tileZ));
-
-				filter.r = Math.max(filter.r, globalFilter.r);
-				filter.g = Math.max(filter.g, globalFilter.g);
-				filter.b = Math.max(filter.b, globalFilter.b);
-
 				currentTile.getImage().draw(xLocation, yLocation,
-						tileSize * xScale, tileSize * yScale, filter);
+						tileSize * xScale, tileSize * yScale,
+						filterAtLocation(new Vector3f(tileX, 0, tileZ)));
 			}
 		}
 	}
@@ -206,8 +195,8 @@ public class World {
 		toRemove.clear();
 	}
 
-	public Color brightnessAtLocation(Vector3f pos) {
-		Color result = new Color(0);
+	public Color filterAtLocation(Vector3f pos) {
+		Color result = getGlobalFilter();
 
 		for (LightEmitting light : lights) {
 			Color lightEffect = light.filterAt(pos);
@@ -218,5 +207,10 @@ public class World {
 		}
 
 		return result;
+	}
+
+	private Color getGlobalFilter() {
+		float temp = Math.abs(1 - brightness);
+		return new Color(temp, temp, temp);
 	}
 }

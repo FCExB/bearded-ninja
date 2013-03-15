@@ -179,7 +179,6 @@ public class Player extends MovingEntity implements LightEmitting {
 
 		if (entity instanceof Creature) {
 			Creature c = (Creature) entity;
-
 			health -= c.getStrength();
 		}
 	}
@@ -189,9 +188,10 @@ public class Player extends MovingEntity implements LightEmitting {
 		if (torchOn) {
 			Vector3f difference = Vector3f.sub(pos, position, null);
 
-			float ratio = 0.2f / difference.length();
+			float ratio = 80f / difference.length();
+			ratio = Math.min(0.9f, ratio);
 
-			return new Color(255 * ratio, 255 * ratio, 255 * ratio);
+			return new Color(ratio, ratio, ratio);
 		}
 
 		return new Color(0, 0, 0);
