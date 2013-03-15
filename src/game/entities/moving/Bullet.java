@@ -26,8 +26,7 @@ public class Bullet extends MovingEntity {
 			Vector3f explosionLocation = new Vector3f(position.x, 0, position.z);
 
 			world.removeEntity(this);
-			world.addEntity(new Explosion(explosionLocation, world),
-					explosionLocation);
+			world.addEntity(new Explosion(explosionLocation, world));
 		}
 	}
 

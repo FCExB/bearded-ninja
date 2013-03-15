@@ -68,6 +68,30 @@ public abstract class Entity implements Comparable<Entity> {
 		return depth;
 	}
 
+	public float greatestX() {
+		return position.x + width / 2;
+	}
+
+	public float greatestY() {
+		return position.y + height;
+	}
+
+	public float greatestZ() {
+		return position.z + depth / 2;
+	}
+
+	public float smallestX() {
+		return position.x - width / 2;
+	}
+
+	public float smallestY() {
+		return position.y;
+	}
+
+	public float smallestZ() {
+		return position.z - depth / 2;
+	}
+
 	protected int getAnimationFrame() {
 		return animationFrame;
 	}
@@ -132,16 +156,32 @@ public abstract class Entity implements Comparable<Entity> {
 	protected void act(int deltaT, GameContainer gc) {
 	}
 
-	public boolean collides(Vector3f pos) {
-		if (solid) {
-			int halfWidth = width / 2;
-			int halfDepth = depth / 2;
+	public boolean collides(Entity that) {
 
-			return pos.x >= position.x - halfWidth
-					&& pos.x <= position.x + halfWidth
-					&& pos.z >= position.z - halfDepth
-					&& pos.z <= position.z + halfDepth && pos.y >= position.y
-					&& pos.y <= position.y + height;
+		if (that != this && solid) {
+			if (this.greatestX() > that.smallestX()
+					&& this.greatestX() < that.greatestX()
+					|| this.smallestX() > that.smallestX()
+					&& this.smallestX() < that.greatestX()) {
+				// There is an X overlap
+
+				if (this.greatestZ() > that.smallestZ()
+						&& this.greatestZ() < that.greatestZ()
+						|| this.smallestZ() > that.smallestZ()
+						&& this.smallestZ() < that.greatestZ()) {
+					// There is a Z overlap
+
+					if (this.greatestY() > that.smallestY()
+							&& this.greatestY() < that.greatestY()
+							|| this.smallestY() > that.smallestY()
+							&& this.smallestY() < that.greatestY()) {
+						// There is a y overlap
+
+						return true;
+					}
+
+				}
+			}
 		}
 
 		return false;
@@ -154,8 +194,7 @@ public abstract class Entity implements Comparable<Entity> {
 
 			world.removeEntity(entity);
 
-			world.addEntity(new Explosion(explosionLocation, world),
-					explosionLocation);
+			world.addEntity(new Explosion(explosionLocation, world));
 		} else if (entity instanceof Player) {
 			Player player = (Player) entity;
 			player.jumping = false;

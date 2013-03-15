@@ -154,30 +154,16 @@ public class World {
 		return new Point(i / getTileSize(), j / getTileSize());
 	}
 
-	public boolean positionClear(Vector3f pos, Entity entity) {
+	public boolean positionClear(Entity entity) {
 		if (entity.isSolid()) {
 
-			for (float x = 0f; x <= 1; x++) {
-				for (float y = 0f; y <= 1; y++) {
-					for (float z = 0f; z <= 1; z++) {
+			for (Entity e : entities) {
 
-						Vector3f vertex = new Vector3f(
-								pos.x - entity.getWidth() / 2 + x
-										* entity.getWidth(), pos.y + y
-										* entity.getHeight(), pos.z
-										- entity.getDepth() / 2 + z
-										* entity.getDepth());
-
-						for (Entity e : entities) {
-							if (e != entity && e.collides(vertex)) {
-								if (entities.contains(entity)) {
-									e.hitBy(entity);
-								}
-								return false;
-							}
-						}
-					}
+				if (entity.collides(e) || e.collides(entity)) {
+					e.hitBy(entity);
+					return false;
 				}
+
 			}
 
 		}
@@ -185,9 +171,9 @@ public class World {
 		return true;
 	}
 
-	public boolean addEntity(Entity entity, Vector3f pos) {
+	public boolean addEntity(Entity entity) {
 
-		if (positionClear(pos, entity)) {
+		if (positionClear(entity)) {
 			toAdd.add(entity);
 			if (entity instanceof LightEmitting) {
 				LightEmitting e = (LightEmitting) entity;
@@ -201,7 +187,7 @@ public class World {
 
 	public boolean addPlayer(Player player, Vector3f pos) {
 		this.player = player;
-		return addEntity(player, pos);
+		return addEntity(player);
 	}
 
 	public void removeEntity(Entity entity) {

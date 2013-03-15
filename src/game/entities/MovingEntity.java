@@ -47,11 +47,12 @@ public abstract class MovingEntity extends Entity {
 
 		applyWorldForces(deltaT);
 
-		Vector3f newPosition = Vector3f.add(position, velocity, null);
+		Vector3f oldPosition = position;
 
-		if (world.positionClear(newPosition, this)) {
-			position = newPosition;
-		} else {
+		position = Vector3f.add(position, velocity, null);
+
+		if (!world.positionClear(this)) {
+			position = oldPosition;
 			velocity = new Vector3f();
 		}
 	}

@@ -10,7 +10,7 @@ import util.Assets;
 public class Tree extends Entity {
 
 	public Tree(Vector3f position, World world) {
-		super(Assets.TREE, true, true, 25, position, world);
+		super(Assets.TREE, true, true, 16, position, world);
 	}
 
 	@Override

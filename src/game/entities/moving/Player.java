@@ -14,7 +14,6 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
 
 import util.Assets;
-import util.Attributes;
 import util.SpriteSheet;
 
 public class Player extends MovingEntity implements LightEmitting {
@@ -107,14 +106,6 @@ public class Player extends MovingEntity implements LightEmitting {
 
 		Input input = gc.getInput();
 
-		if (input.isKeyDown(Input.KEY_C)) {
-			Vector3f newPos = new Vector3f(position.x + getWidth(), 0,
-					position.getZ() + getDepth());
-
-			world.addEntity(new Creature(new Attributes(), newPos, world),
-					newPos);
-		}
-
 		if (input.isKeyPressed(Input.KEY_T)) {
 			if (torchOn) {
 				torchOn = false;
@@ -169,7 +160,7 @@ public class Player extends MovingEntity implements LightEmitting {
 
 			Bullet bullet = new Bullet(launchSite, velocity, world);
 
-			world.addEntity(bullet, launchSite);
+			world.addEntity(bullet);
 		}
 	}
 

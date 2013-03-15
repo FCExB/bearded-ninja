@@ -87,8 +87,7 @@ public class Creature extends MovingEntity {
 
 				System.out.println(newAs);
 
-				if (world.addEntity(new Creature(newAs, babyPosition, world),
-						babyPosition)) {
+				if (world.addEntity(new Creature(newAs, babyPosition, world))) {
 					this.timeSinceBaby = 0;
 					that.timeSinceBaby = 0;
 				}

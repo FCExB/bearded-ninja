@@ -100,8 +100,7 @@ public class GameplayState extends BasicGameState {
 
 		if (timeSinceSearch >= 800) {
 			for (Entity e : entitiesNotInView) {
-				if (camera.inUpdateView(e.getPosition())
-						&& world.addEntity(e, e.getPosition())) {
+				if (camera.inUpdateView(e.getPosition()) && world.addEntity(e)) {
 					nowInView.add(e);
 					e.update(delta, container);
 				}
@@ -152,13 +151,13 @@ public class GameplayState extends BasicGameState {
 				break;
 			case 1:
 				world.addEntity(new Creature(new Attributes(), mousePoint,
-						world), mousePoint);
+						world));
 				break;
 			case 2:
-				world.addEntity(new Fence(mousePoint, world), mousePoint);
+				world.addEntity(new Fence(mousePoint, world));
 				break;
 			case 3:
-				world.addEntity(new Torch(mousePoint, world), mousePoint);
+				world.addEntity(new Torch(mousePoint, world));
 				break;
 			}
 		}
