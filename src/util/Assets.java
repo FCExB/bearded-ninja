@@ -24,6 +24,9 @@ public class Assets {
 
 	public static Image MINECRAFT;
 
+	public static Image HEALTH_BAR;
+	public static Image HEALTH_BAR_BASE;
+
 	public Assets() throws SlickException {
 		TILE_ONE = new Image("bin/data/grass.png");
 		ROCK = new Image("bin/data/new rock.png");
@@ -43,5 +46,8 @@ public class Assets {
 
 		TORCH = new Image("bin/data/torch.png");
 		IRISH_DRESS = new Image("bin/data/irishdress.png");
+
+		HEALTH_BAR = new Image("bin/data/healthBar.png");
+		HEALTH_BAR_BASE = new Image("bin/data/healthBarBase.png");
 	}
 }

@@ -1,14 +1,17 @@
 package game.entities.moving;
 
+import game.Camera;
 import game.TheWild;
 import game.entities.Entity;
 import game.entities.LightEmitting;
 import game.entities.MovingEntity;
+import game.entities.addons.HealthBar;
 import game.world.World;
 
 import org.lwjgl.util.vector.Vector3f;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
+import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
@@ -23,7 +26,8 @@ public class Player extends MovingEntity implements LightEmitting {
 
 	private final int reloadTime = 100;
 	private int time;
-	private int health = 100;
+
+	private final HealthBar health = new HealthBar(100);
 
 	public boolean jumping, torchOn = false;
 
@@ -88,7 +92,7 @@ public class Player extends MovingEntity implements LightEmitting {
 
 	@Override
 	protected void act(int deltaT, GameContainer gc) {
-		if (health <= 0) {
+		if (health.dead()) {
 			game.enterState(TheWild.TITLE_STATE);
 		}
 
@@ -147,6 +151,11 @@ public class Player extends MovingEntity implements LightEmitting {
 		}
 	}
 
+	@Override
+	public void renderExtras(Camera camera, Graphics g, Color filter) {
+		health.render(this, filter, camera);
+	}
+
 	public void shootAt(Vector3f aim) {
 		if (time >= reloadTime) {
 
@@ -170,7 +179,7 @@ public class Player extends MovingEntity implements LightEmitting {
 
 		if (entity instanceof Creature) {
 			Creature c = (Creature) entity;
-			health -= c.getStrength();
+			health.reduce(c.getStrength());
 		}
 	}
 

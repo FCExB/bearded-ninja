@@ -2,6 +2,7 @@ package game;
 
 import game.entities.Entity;
 import game.entities.moving.Creature;
+import game.entities.moving.NPC;
 import game.entities.moving.Player;
 import game.entities.stationary.Fence;
 import game.entities.stationary.Torch;
@@ -136,6 +137,9 @@ public class GameplayState extends BasicGameState {
 		if (input.isKeyDown(Input.KEY_4)) {
 			currentSelection = 3;
 		}
+		if (input.isKeyDown(Input.KEY_5)) {
+			currentSelection = 4;
+		}
 
 		int x = Mouse.getX();
 		int z = 600 - Mouse.getY();
@@ -158,6 +162,9 @@ public class GameplayState extends BasicGameState {
 				break;
 			case 3:
 				world.addEntity(new Torch(mousePoint, world));
+				break;
+			case 4:
+				world.addEntity(new NPC(mousePoint, world));
 				break;
 			}
 		}

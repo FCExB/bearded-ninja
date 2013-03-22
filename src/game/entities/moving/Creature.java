@@ -1,11 +1,15 @@
 package game.entities.moving;
 
+import game.Camera;
 import game.entities.Entity;
 import game.entities.MovingEntity;
+import game.entities.addons.HealthBar;
 import game.world.World;
 
 import org.lwjgl.util.vector.Vector3f;
+import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
+import org.newdawn.slick.Graphics;
 
 import util.Assets;
 import util.Attribute;
@@ -14,7 +18,8 @@ import util.Attributes;
 public class Creature extends MovingEntity {
 
 	private final float acceleration;
-	private int health;
+
+	private final HealthBar health;
 
 	private int timeSinceBaby, timeSinceFood;
 
@@ -23,7 +28,7 @@ public class Creature extends MovingEntity {
 	public Creature(Attributes attributes, Vector3f position, World world) {
 		super(Assets.CREATURE, position, new Vector3f(0, 0, 0), world);
 		this.attributes = attributes;
-		health = (int) attributes.getAttribute(Attribute.HEALTH);
+		health = new HealthBar((int) attributes.getAttribute(Attribute.HEALTH));
 		acceleration = attributes.getAttribute(Attribute.SPEED);
 	}
 
@@ -57,6 +62,11 @@ public class Creature extends MovingEntity {
 		timeSinceFood += deltaT;
 	}
 
+	@Override
+	public void renderExtras(Camera camera, Graphics g, Color filter) {
+		health.render(this, filter, camera);
+	}
+
 	public int getStrength() {
 		return (int) attributes.getAttribute(Attribute.STRENGTH);
 	}
@@ -69,8 +79,8 @@ public class Creature extends MovingEntity {
 			Creature that = (Creature) entity;
 
 			if (that.timeSinceFood >= attributes.getAttribute(Attribute.FOOD)) {
-				health--;
-				if (health <= 0) {
+				health.reduce(1);
+				if (health.dead()) {
 					world.removeEntity(this);
 					that.timeSinceFood = 0;
 				}
@@ -94,9 +104,9 @@ public class Creature extends MovingEntity {
 			}
 		} else if (entity instanceof Bullet) {
 
-			health--;
+			health.reduce(1);
 
-			if (health <= 0) {
+			if (health.dead()) {
 				world.removeEntity(this);
 				world.removeEntity(entity);
 			}
