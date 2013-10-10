@@ -65,7 +65,7 @@ public abstract class MovingEntity extends Entity {
 	public void hitBy(Entity entity) {
 		super.hitBy(entity);
 
-		if (entity instanceof Bullet) {
+		if (entity instanceof Bullet && !(this instanceof Bullet)) {
 			Bullet bullet = (Bullet) entity;
 
 			accelerate(bullet.getVelocity());

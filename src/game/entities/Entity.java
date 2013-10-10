@@ -165,23 +165,35 @@ public abstract class Entity implements Comparable<Entity> {
 
 	public boolean collides(Entity that) {
 
-		if (that != this && solid) {
-			if (this.greatestX() > that.smallestX()
-					&& this.greatestX() < that.greatestX()
-					|| this.smallestX() > that.smallestX()
-					&& this.smallestX() < that.greatestX()) {
+		if (that != this && this.solid && that.solid) {
+			if ((this.greatestX() >= that.smallestX() && this.greatestX() <= that
+					.greatestX())
+					|| (this.smallestX() >= that.smallestX() && this
+							.smallestX() <= that.greatestX())
+					|| (this.greatestX() <= that.greatestX() && this
+							.smallestX() >= that.smallestX())
+					|| (this.greatestX() >= that.greatestX() && this
+							.smallestX() <= that.smallestX())) {
 				// There is an X overlap
 
 				if (this.greatestZ() > that.smallestZ()
-						&& this.greatestZ() < that.greatestZ()
-						|| this.smallestZ() > that.smallestZ()
-						&& this.smallestZ() < that.greatestZ()) {
+						&& this.greatestZ() <= that.greatestZ()
+						|| this.smallestZ() >= that.smallestZ()
+						&& this.smallestZ() <= that.greatestZ()
+						|| this.greatestZ() <= that.greatestZ()
+						&& this.smallestZ() >= that.smallestZ()
+						|| this.greatestZ() >= that.greatestZ()
+						&& this.smallestZ() <= that.smallestZ()) {
 					// There is a Z overlap
 
 					if (this.greatestY() > that.smallestY()
-							&& this.greatestY() < that.greatestY()
-							|| this.smallestY() > that.smallestY()
-							&& this.smallestY() < that.greatestY()) {
+							&& this.greatestY() <= that.greatestY()
+							|| this.smallestY() >= that.smallestY()
+							&& this.smallestY() <= that.greatestY()
+							|| this.greatestY() <= that.greatestY()
+							&& this.smallestY() >= that.smallestY()
+							|| this.greatestY() >= that.greatestY()
+							&& this.smallestY() <= that.smallestY()) {
 						// There is a y overlap
 
 						return true;
@@ -195,7 +207,7 @@ public abstract class Entity implements Comparable<Entity> {
 	}
 
 	public void hitBy(Entity entity) {
-		if (entity instanceof Bullet) {
+		if (entity instanceof Bullet && !(this instanceof Bullet)) {
 			Vector3f explosionLocation = new Vector3f(entity.position.x,
 					entity.position.y, position.z);
 

@@ -104,7 +104,7 @@ public class Creature extends MovingEntity {
 			}
 		} else if (entity instanceof Bullet) {
 
-			health.reduce(1);
+			health.reduce(2);
 
 			if (health.dead()) {
 				world.removeEntity(this);

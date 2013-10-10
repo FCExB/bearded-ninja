@@ -29,5 +29,4 @@ public class Bullet extends MovingEntity {
 			world.addEntity(new Explosion(explosionLocation, world));
 		}
 	}
-
 }

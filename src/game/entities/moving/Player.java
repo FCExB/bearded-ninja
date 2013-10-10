@@ -24,7 +24,7 @@ public class Player extends MovingEntity implements LightEmitting {
 	private final StateBasedGame game;
 	private final float acceleration = 30f;
 
-	private final int reloadTime = 100;
+	private final int reloadTime = 500;
 	private int time;
 
 	private final HealthBar health = new HealthBar(100);

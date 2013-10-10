@@ -79,7 +79,7 @@ public class World {
 			entities.add(new Flower(tileVector, this));
 		} else if (Math.random() < 0.005) {
 			entities.add(new Tree(tileVector, this));
-		} else if (Math.random() < 0.0025) {
+		} else if (Math.random() < 0.002) {
 			entities.add(new Creature(new Attributes(), tileVector, this));
 		}
 
@@ -159,7 +159,7 @@ public class World {
 
 			for (Entity e : entities) {
 
-				if (entity.collides(e) || e.collides(entity)) {
+				if (entity.collides(e)) {
 					e.hitBy(entity);
 					return false;
 				}
