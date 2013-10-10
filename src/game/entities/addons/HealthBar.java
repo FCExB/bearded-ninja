@@ -31,16 +31,16 @@ public class HealthBar {
 
 		Vector3f position = e.getPosition();
 
-		int x = Math.round(position.getX() - camera.getX()) + 500
-				- e.getWidth() / 2;
+		int x = Math.round(position.getX() - camera.getX()) + 500;
 
-		int y = Math.round((position.getZ() - camera.getY()) * zScaler + 300
-				- (e.getDepth() * zScaler) / 2);
+		int y = Math.round((position.getZ() - camera.getY()) * zScaler + 300) + 2;
 
 		float relativeHealth = (float) currentHealth / (float) maxHealth;
 
-		Assets.HEALTH_BAR_BASE.draw(x, y, filter);
-		Assets.HEALTH_BAR.draw(x, y, Assets.HEALTH_BAR.getWidth()
-				* relativeHealth, Assets.HEALTH_BAR.getHeight(), filter);
+		Assets.HEALTH_BAR_BASE.draw(x - Assets.HEALTH_BAR_BASE.getWidth() / 2,
+				y, filter);
+		Assets.HEALTH_BAR.draw(x - Assets.HEALTH_BAR_BASE.getWidth() / 2, y,
+				Assets.HEALTH_BAR.getWidth() * relativeHealth,
+				Assets.HEALTH_BAR.getHeight(), filter);
 	}
 }
