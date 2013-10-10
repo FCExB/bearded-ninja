@@ -103,7 +103,7 @@ public class Camera {
 
 		if (input.isKeyDown(Input.KEY_Q) && angle < 90) {
 			angle += rotateSpeed * deltaT;
-		} else if (input.isKeyDown(Input.KEY_E) && angle > 2) {
+		} else if (input.isKeyDown(Input.KEY_E) && angle > 30) {
 			angle -= rotateSpeed * deltaT;
 		}
 
