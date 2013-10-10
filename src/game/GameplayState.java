@@ -73,6 +73,8 @@ public class GameplayState extends BasicGameState {
 			return;
 		}
 
+		camera.update(gc, player, 10);
+		camera.addTilesInUpdateView(world);
 	}
 
 	@Override
@@ -188,9 +190,10 @@ public class GameplayState extends BasicGameState {
 			Graphics g) {
 
 		g.drawRect(340, 568, 320, 32);
-		Assets.BULLET.draw(340, 568, 32, 16);
+		Assets.BULLET.draw(340, 574, 32, 16);
 		Assets.CREATURE.draw(372, 568, 32, 32);
 		Assets.FENCE.draw(404, 568, 32, 32);
+		Assets.TORCH.draw(436, 568, 32, 32);
 
 		g.drawRect(340 + 32 * currentSelection, 568, 32, 32);
 
