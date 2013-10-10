@@ -150,7 +150,7 @@ public abstract class Entity implements Comparable<Entity> {
 				x -= 32;
 
 				y += height * otherScaler;
-				y -= 64 * otherScaler;
+				y -= 60 * otherScaler;
 			}
 
 			float xScale = 1;
