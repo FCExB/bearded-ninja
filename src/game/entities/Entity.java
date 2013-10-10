@@ -40,8 +40,15 @@ public abstract class Entity implements Comparable<Entity> {
 		this.position = position;
 		this.world = world;
 		animation = ss;
-		width = ss.getSpriteWidth();
-		height = ss.getSpriteHeight();
+
+		if (this instanceof Player) {
+			height = 40;
+			width = 32;
+		} else {
+			width = ss.getSpriteWidth();
+			height = ss.getSpriteHeight();
+		}
+
 		this.depth = depth;
 		this.hasShadow = hasShadow;
 		this.solid = solid;
@@ -108,6 +115,7 @@ public abstract class Entity implements Comparable<Entity> {
 			float otherScaler = camera.otherScaler();
 
 			if (hasShadow) {
+
 				int x = Math.round(position.getX() - camera.getX()) + 500
 						- width / 2;
 
@@ -133,14 +141,28 @@ public abstract class Entity implements Comparable<Entity> {
 
 			int x = Math.round(position.getX() - camera.getX()) + 500 - width
 					/ 2;
+
 			int y = Math.round((position.getZ() - camera.getY()) * zScaler
 					+ 300 - height * otherScaler - position.y * otherScaler);
+
+			if (this instanceof Player) {
+				x += width / 2;
+				x -= 32;
+
+				y += height * otherScaler;
+				y -= 64 * otherScaler;
+			}
+
 			float xScale = 1;
 			float yScale = otherScaler;
 
 			Color filter = world.filterAtLocation(position);
+			if (this instanceof Player) {
+				image.draw(x, y, 64 * xScale, 64 * yScale, filter);
+			} else {
 
-			image.draw(x, y, width * xScale, height * yScale, filter);
+				image.draw(x, y, width * xScale, height * yScale, filter);
+			}
 
 			renderExtras(camera, g, filter);
 		}

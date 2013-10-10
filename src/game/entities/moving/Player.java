@@ -24,7 +24,7 @@ public class Player extends MovingEntity implements LightEmitting {
 	private final StateBasedGame game;
 	private final float acceleration = 30f;
 
-	private final int reloadTime = 500;
+	private final int reloadTime = 300;
 	private int time;
 
 	private final HealthBar health = new HealthBar(100);
@@ -161,11 +161,11 @@ public class Player extends MovingEntity implements LightEmitting {
 
 			time = 0;
 
-			Vector3f launchSite = new Vector3f(position.x, height + 15,
+			Vector3f launchSite = new Vector3f(position.x, height + 7,
 					position.z);
 
 			Vector3f velocity = Vector3f.sub(aim, position, null);
-			velocity.scale(0.037f);
+			velocity.scale(0.04f);
 
 			Bullet bullet = new Bullet(launchSite, velocity, world);
 

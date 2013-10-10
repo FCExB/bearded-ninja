@@ -10,7 +10,7 @@ import util.Assets;
 public class Fence extends Entity {
 
 	public Fence(Vector3f position, World world) {
-		super(Assets.MINECRAFT.getSubImage(7 * 16, 0, 16, 16), true, true, 20,
+		super(Assets.MINECRAFT.getSubImage(7 * 16, 0, 16, 16), true, true, 16,
 				position, world);
 	}
 
