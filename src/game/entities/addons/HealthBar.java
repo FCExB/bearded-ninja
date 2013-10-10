@@ -33,7 +33,8 @@ public class HealthBar {
 
 		int x = Math.round(position.getX() - camera.getX()) + 500;
 
-		int y = Math.round((position.getZ() - camera.getY()) * zScaler + 300) + 2;
+		int y = Math.round((position.getZ() - camera.getY() + 10) * zScaler
+				+ 300);
 
 		float relativeHealth = (float) currentHealth / (float) maxHealth;
 
